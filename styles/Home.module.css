@@ -9,24 +9,39 @@
 }
 
 .navContainer {
-  padding: 1rem;
   display: flex;
   flex-flow: column;
-  justify-content: center;
+  align-items: center;
   margin: 0;
   left: 0;
-  height: 80vh;
   position: absolute;
+  height: 80vh;
   width: 20%;
   background-color: red;
 }
 
 .navItem {
-  background-color: green;
-  font-weight: bolder;
-  font-size: 2rem;
-  height: 15vh;
-  padding: 2rem;
+  width: 100%;
+  height: calc((80vh/5) - 0.03vh);
+  display: block;
+  font-weight: bold;
+  background-color: lightgrey;
+  border: 1px solid black;
+  text-align: center;
+}
+
+.navItem:hover {
+  background-color: cornsilk;
+}
+
+.active {
+  width: 100%;
+  height: calc((80vh/5) - 0.03vh);
+  display: block;
+  font-weight: bold;
+  background-color: lightblue;
+  border: 1px solid black;
+  text-align: center;
 }
 
 .main {

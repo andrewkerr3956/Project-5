@@ -1,3 +1,4 @@
+import { calculateObjectSize } from 'bson'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
@@ -15,15 +16,15 @@ export default function Home() {
       </header>
       <main className={styles.container}>
         <aside>
-          <nav>
-            <ul className={styles.navContainer}>
-              <li className={styles.navItem}>Category 1</li>
-              <li className={styles.navItem}>Category 2</li>
-              <li className={styles.navItem}>Category 3</li>
-              <li className={styles.navItem}>Category 4</li>
-              <li className={styles.navItem}>Category 5</li>
-            </ul>
-          </nav>
+          <ul>
+            <nav className={styles.navContainer}>
+              <div className={styles.navItem}><li style={{marginTop: "50px"}}>Category 1</li></div>
+              <div className={styles.navItem}><li style={{marginTop: "50px"}}>Category 2</li></div>
+              <div className={styles.navItem}><li style={{marginTop: "50px"}}>Category 3</li></div>
+              <div className={styles.navItem}><li style={{marginTop: "50px"}}>Category 4</li></div>
+              <div className={styles.navItem}><li style={{marginTop: "50px"}}>Category 5</li></div>
+            </nav>
+          </ul>
         </aside>
         <div>
 
