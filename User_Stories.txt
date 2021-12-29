@@ -1,0 +1,11 @@
+1) As a user, I want to be able to answer questions on a category of my choice.
+
+2) As a user, I want to be able to view questions on a category of my choice.
+
+3) As a user, I want to be able to ask a new question on a category of my choice.
+
+4) As a user, I want to be able to view the points I have earned from answering questions.
+
+5) As a question creator, I want to be able to mark an answer to my question as correct.
+
+6) As a question creator, I want to be able to delete a question.
