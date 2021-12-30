@@ -5,6 +5,7 @@
 .headerContainer {
   padding: 1rem;
   height: 20vh;
+  text-align: center;
   background: linear-gradient(180deg, rgba(172, 116, 216, 0) 0%, #AC74D8 10.42%, rgba(172, 116, 216, 0.916667) 99.97%, rgba(172, 116, 216, 0) 99.98%, rgba(172, 116, 216, 0.0238739) 99.99%);
 }
 
@@ -44,6 +45,15 @@
   text-align: center;
 }
 
+.mainContainer {
+  left: 20%;
+  position: absolute;
+  text-align: center;
+  height: 80vh;
+  width: 80%;
+}
+
+/*
 .main {
   min-height: 100vh;
   padding: 4rem 0;
@@ -157,3 +167,4 @@
     flex-direction: column;
   }
 }
+*/

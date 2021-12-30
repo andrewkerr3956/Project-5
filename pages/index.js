@@ -1,9 +1,22 @@
 import { calculateObjectSize } from 'bson'
 import Head from 'next/head'
 import Image from 'next/image'
+import { useState } from 'react'
 import styles from '../styles/Home.module.css'
 
 export default function Home() {
+  const [currentCategory, setCurrentCategory] = useState(0);
+  const [categoryTitle, setCategoryTitle] = useState("");
+  const changeCategory = async(event) => {
+    setCurrentCategory(event.target.id);
+    let data = await fetch(`/api/category?id=${event.target.id}`); // Reason why I supplied target id is because the setState may not be finished by the time the fetch is called.
+    data = await data.json();
+    console.log(data.results[0].category)
+    setCategoryTitle(data.results[0].category);
+  }
+  console.log("category title", categoryTitle)
+  console.log("currentCategory", currentCategory)
+
   return (
     <div>
       <head>
@@ -13,22 +26,31 @@ export default function Home() {
       </head>
       <header className={styles.headerContainer}>
         <h1 className={styles.title}>Answers Galore</h1>
+        <div style={{marginTop: "20px"}}>
+          <button>Login</button>
+          <button>Register</button>
+        </div>
       </header>
       <main className={styles.container}>
         <aside>
           <ul>
             <nav className={styles.navContainer}>
-              <div className={styles.navItem}><li style={{marginTop: "50px"}}>Category 1</li></div>
-              <div className={styles.navItem}><li style={{marginTop: "50px"}}>Category 2</li></div>
-              <div className={styles.navItem}><li style={{marginTop: "50px"}}>Category 3</li></div>
-              <div className={styles.navItem}><li style={{marginTop: "50px"}}>Category 4</li></div>
-              <div className={styles.navItem}><li style={{marginTop: "50px"}}>Category 5</li></div>
+              <button id={1} onClick={changeCategory} className={currentCategory == 1 ? styles.active : styles.navItem }><li style={{marginTop: "10px"}}>Category 1</li></button>
+              <button id={2} onClick={changeCategory} className={currentCategory == 2 ? styles.active : styles.navItem}><li style={{marginTop: "10px"}}>Category 2</li></button>
+              <button id={3} onClick={changeCategory} className={currentCategory == 3 ? styles.active : styles.navItem}><li style={{marginTop: "10px"}}>Category 3</li></button>
+              <button id={4} onClick={changeCategory} className={currentCategory == 4 ? styles.active : styles.navItem}><li style={{marginTop: "10px"}}>Category 4</li></button>
+              <button id={5} onClick={changeCategory} className={currentCategory == 5 ? styles.active : styles.navItem}><li style={{marginTop: "10px"}}>Category 5</li></button>
             </nav>
           </ul>
         </aside>
-        <div>
-
-        </div>
+        <div className={styles.mainContainer}>
+          {currentCategory === 0 && (
+            <h2>Please select a category.</h2>
+          )}
+          {currentCategory > 0 && (
+            <h2>Welcome to {categoryTitle}</h2>
+          )}
+        </div>  
       </main>
 
       <footer>
