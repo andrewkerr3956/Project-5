@@ -6,7 +6,6 @@ import { useState, useEffect } from 'react'
 import Link  from 'next/link'
 import styles from '../styles/Home.module.css'
 
-
 export default function Home() {
   const [categories, setCategories] = useState([]); // Get the categories from the database
   const [currentCategory, setCurrentCategory] = useState(0); // Set the category id to the one the user selected
