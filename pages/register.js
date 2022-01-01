@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 
-const CheckLogin = async (user, pass) => {
+const AddUser = async (user, pass) => {
     event.preventDefault();
-    document.getElementById('loginError').innerText = "";
+    document.getElementById('registerError').innerText = "";
     console.log("Check Login called!")
     let data = await fetch(`/api/login`, {
         method: "POST",
@@ -25,9 +25,10 @@ const CheckLogin = async (user, pass) => {
     }
 }
 
-const Login = () => {
+const Register = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [repeatPassword, setRepeatPassword] = useState("");
     useEffect(() => {
         if (sessionStorage.userid) {
             window.location.pathname = '/';
@@ -46,6 +47,12 @@ const Login = () => {
                         <label htmlFor="password">Password <br />
                             <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} required maxLength={200} />
                         </label> <p />
+                        <label htmlFor="repeatPassword">Repeat Password <br />
+                            <input type="password" value={repeatPassword} onChange={(event) => setRepeatPassword(event.target.value)} required maxLength={200} />
+                            {repeatPassword !== "" && repeatPassword !== password && (
+                                <div style={{color: "red", fontSize: "0.7rem"}}>The passwords do not match.</div>
+                            )}
+                        </label> <p />
                         <button type="submit">Submit</button> <p />
                         <div id="loginError" style={{ color: "red" }}></div>
                     </form>
@@ -55,4 +62,4 @@ const Login = () => {
     )
 }
 
-export default Login;
+export default Register;

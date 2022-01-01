@@ -17,11 +17,17 @@ export default function Home() {
   useEffect(() => {
     fetchCategories();
   }, []);
+  // When the page is loaded, determine if their is a user logged in. If not, display that they must login to create questions.
+  useEffect(() => {
+    if(!sessionStorage.getItem("userid")) {
+      setQuestionText("Login to create a question.")
+      setDetailsText("You must be logged in to create a question.")
+    }
+  }, []);
   // When currentCategory is changed, fetch the questions from the selected category.
   useEffect(() => {
     fetchQuestions();
   }, [currentCategory])
-
 
   const fetchQuestions = async () => {
     // Build this later
@@ -64,7 +70,7 @@ export default function Home() {
           <h1 className={styles.title}>Answers Galore</h1>
           <div style={{ marginTop: "20px" }}>
             <Link href={'/login'} passHref><button>Login</button></Link>
-            <button>Register</button>
+            <Link href={'/register'} passHref><button>Register</button></Link>
           </div>
         </header>
         <main className={styles.container}>
@@ -89,10 +95,10 @@ export default function Home() {
                 <section name={"createQuestion"}>
                   <h3>Create a Question</h3>
                   <label htmlFor={"question"}> Question <br />
-                    <input type="text" value={questionText} onChange={handleQuestionText} maxLength={200} required />
+                    <input type="text" value={questionText} onChange={handleQuestionText} maxLength={200} readOnly={!sessionStorage.getItem("userid")} required />
                   </label> <p />
                   <label htmlFor={"details"}> Details <br />
-                    <textarea value={detailsText} onChange={handleDetailsText} rows={4} cols={24} maxLength={200} required />
+                    <textarea value={detailsText} onChange={handleDetailsText} rows={4} cols={24} maxLength={200} readOnly={!sessionStorage.getItem("userid")} required />
                   </label>
                 </section>
                 <section style={{ marginTop: "40px" }} name={"previousQuestions"}>

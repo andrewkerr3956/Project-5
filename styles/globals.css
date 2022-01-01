@@ -19,6 +19,14 @@ label {
   font-weight: bold;
 }
 
+input[readOnly] {
+  background-color: lightgray;
+}
+
+textarea[readOnly] {
+  background-color: lightgray;
+}
+
 a {
   color: inherit;
   text-decoration: none;

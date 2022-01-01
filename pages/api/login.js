@@ -1,15 +1,35 @@
+let bcrypt = require('bcrypt');
+let mysql = require('../../lib/db.js');
+
 const handler = async (req, res) => {
+    const error = "There was an error."
+    const success = "Successfully logged in!";
     if (req.method == 'POST') {
-        if (req.body.user == "admin" && req.body.pass == "test") {
-            const success = "Successfully logged in."
-            console.log(success)
-            res.send({ success })
-        }
-        else {
-            const error = "There was an error."
-            console.log(error)
-            res.send({ error })
-        }
+        mysql.pool.getConnection((err, conn) => {
+            if (err) throw err;
+            conn.query("SELECT * FROM `users` WHERE `username` = ?", [req.body.username], async (err, results) => {
+                if(err) throw err;
+                if(results.length > 0) { // If there is a match
+                    if(bcrypt.compare(req.body.password, results[0].password)) { // Check the supplied password against the one in the database.
+                        console.log(success);
+                        res.send({success}) 
+                    }
+                    else { // Passwords do not match
+                        console.log(error);
+                        res.send({error});
+                    }
+                }
+                else { // There is no match found in the database.
+                    console.log({error});
+                    res.send({error});
+                }
+            })
+        })
+    }
+    else {
+        const methodError = "The request method is invalid for this route."
+        console.log(methodError)
+        res.send({ methodError });
     }
 }
 
