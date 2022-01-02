@@ -10,9 +10,10 @@ const handler = async (req, res) => {
             conn.query("SELECT * FROM `users` WHERE `username` = ?", [req.body.username], async (err, results) => {
                 if(err) throw err;
                 if(results.length > 0) { // If there is a match
-                    if(bcrypt.compare(req.body.password, results[0].password)) { // Check the supplied password against the one in the database.
+                    let matchPassword = await bcrypt.compare(req.body.password.toString(), results[0].password.toString())
+                    if(matchPassword) { // Check the supplied password against the one in the database.
                         console.log(success);
-                        res.send({success}) 
+                        res.send({success, results}) 
                     }
                     else { // Passwords do not match
                         console.log(error);
@@ -23,6 +24,7 @@ const handler = async (req, res) => {
                     console.log({error});
                     res.send({error});
                 }
+                conn.release();
             })
         })
     }

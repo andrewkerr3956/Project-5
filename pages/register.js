@@ -1,27 +1,36 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 
-const AddUser = async (user, pass) => {
+const AddUser = async (user, pass, repeatPass) => {
     event.preventDefault();
-    document.getElementById('registerError').innerText = "";
-    console.log("Check Login called!")
-    let data = await fetch(`/api/login`, {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            user: user,
-            pass: pass
-        })
-    });
-    data = await data.json();
-    if (data.error || data.methodError) {
-        document.getElementById('loginError').innerText = "Error logging in. Please try again."
+    if (repeatPass === pass) { // Only register the user if the two fields match.
+        document.getElementById('registerError').innerText = "";
+        console.log("Add user called!")
+        let data = await fetch(`/api/register`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: user,
+                password: pass
+            })
+        });
+        data = await data.json();
+        if (data.error || data.methodError || data.existsError) {
+            if (data.error)
+                document.getElementById('registerError').innerText = data.error;
+            else if (data.methodError)
+                document.getElementById('registerError').innerText = data.methodError;
+            else
+                document.getElementById('registerError').innerText = data.existsError;
+        }
+        else {
+            window.location.pathname = '/';
+        }
     }
     else {
-        sessionStorage.setItem("userid", 1);
-        window.location.pathname = '/';
+        document.getElementById('registerError').innerText = "The two passwords must match."
     }
 }
 
@@ -40,7 +49,7 @@ const Register = () => {
                 <h2 style={{ marginTop: "10%", textAlign: "center" }}>Answers Galore</h2>
                 <div style={{ backgroundColor: "whitesmoke", width: "50%", border: "2px solid black", textAlign: "center", margin: "auto", padding: "1rem" }}>
                     <h4>Log in to your account</h4>
-                    <form id="loginForm" onSubmit={() => CheckLogin(username, password)}>
+                    <form id="loginForm" onSubmit={() => AddUser(username, password, repeatPassword)}>
                         <label htmlFor="username">Username <br />
                             <input type="text" value={username} onChange={(event) => setUsername(event.target.value)} maxLength={50} required />
                         </label> <p />
@@ -50,11 +59,11 @@ const Register = () => {
                         <label htmlFor="repeatPassword">Repeat Password <br />
                             <input type="password" value={repeatPassword} onChange={(event) => setRepeatPassword(event.target.value)} required maxLength={200} />
                             {repeatPassword !== "" && repeatPassword !== password && (
-                                <div style={{color: "red", fontSize: "0.7rem"}}>The passwords do not match.</div>
+                                <div style={{ color: "red", fontSize: "0.7rem" }}>The passwords do not match.</div>
                             )}
                         </label> <p />
                         <button type="submit">Submit</button> <p />
-                        <div id="loginError" style={{ color: "red" }}></div>
+                        <div id="registerError" style={{ color: "red" }}></div>
                     </form>
                 </div>
             </div>

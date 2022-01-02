@@ -11,8 +11,8 @@ const CheckLogin = async (user, pass) => {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            user: user,
-            pass: pass
+            username: user,
+            password: pass
         })
     });
     data = await data.json();
@@ -20,7 +20,9 @@ const CheckLogin = async (user, pass) => {
         document.getElementById('loginError').innerText = "Error logging in. Please try again."
     }
     else {
-        sessionStorage.setItem("userid", 1);
+        sessionStorage.setItem("userid", data.results[0].userid);
+        sessionStorage.setItem("username", data.results[0].username);
+        sessionStorage.setItem("points", data.results[0].points);
         window.location.pathname = '/';
     }
 }
