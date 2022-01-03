@@ -12,6 +12,7 @@ export default function Home() {
   const [categoryTitle, setCategoryTitle] = useState(""); // Category title based on the one the user selected
   const [questionText, setQuestionText] = useState(""); // The question text value in the create question section of a category
   const [detailsText, setDetailsText] = useState(""); // The details text value in the create question section of a category
+  const [questionsList, setQuestionsList] = useState([]); // The questions list will hold the questions obtained from the chosen categories
 
   // When the page is loaded, fetch the categories once.
   useEffect(() => {
@@ -38,9 +39,28 @@ export default function Home() {
   useEffect(() => {
     fetchQuestions();
   }, [currentCategory])
+  // When currentCategory is changed, refresh the questions list.
+  useEffect(() => {
+    setQuestionsList([]);
+  }, [currentCategory])
 
   const fetchQuestions = async () => {
-    // Build this later
+    let data = await fetch(`/api/question?categoryid=${currentCategory}`);
+    data = await data.json();
+    if(data.results) {
+      // Handle if there are results
+      let tempArray = [];
+      data.results.map((item) => {
+        return tempArray.push([item.question, item.author]);
+      })
+      setQuestionsList(tempArray);
+    }
+    else {
+      // Handle no results
+      let tempArray = [];
+      tempArray.push("There are currently no questions.");
+      setQuestionsList(tempArray);
+    }
   }
 
   const fetchCategories = async () => {
@@ -67,6 +87,26 @@ export default function Home() {
 
   const handleDetailsText = async (event) => {
     setDetailsText(event.target.value);
+  }
+
+  const submitQuestion = async() => {
+    // Handles submitting a question.
+    let data = await fetch(`/api/question`, {
+      method: 'POST',
+      headers: {
+        'Content-Type' : 'application/json'
+      },
+      body: JSON.stringify({
+        question: questionText,
+        questionDetails: detailsText,
+        author: sessionStorage.username,
+        categoryid: currentCategory
+      })
+    });
+    data = await data.json();
+    if(data.success) {
+      alert("Question has been successfully created!");
+    }
   }
 
   return (
@@ -112,10 +152,24 @@ export default function Home() {
                 </label> <p />
                 <label htmlFor={"details"}> Details <br />
                   <textarea value={detailsText} onChange={handleDetailsText} rows={4} cols={24} maxLength={200} readOnly={!sessionStorage.getItem("userid")} required />
-                </label>
+                </label> <p />
+                <button type="submit" onClick={submitQuestion}>Submit</button>
               </section>
               <section style={{ marginTop: "40px" }} name={"previousQuestions"}>
                 <h3>Previous Questions</h3>
+                <ul style={{listStyleType: 'none'}}>
+                {questionsList.length > 0 && questionsList.map((item, idx) => {
+                  if(item[0].length > 1) {
+                    // Check if the item length is > 1 (more than one letter) so we can tell that we have actual questions in the array.
+                    // Definitely not the most ideal way to do it, but it works
+                    return <li key={idx}><Link href={`/question`} passHref>{item[0]}</Link><div>by <strong>{item[1]}</strong></div></li>
+                  }
+                  else {
+                    // No results from the database
+                    return <li key={idx}>{item}</li>
+                  }
+                })}
+                </ul>
               </section>
             </>
           )}
