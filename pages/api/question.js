@@ -2,6 +2,7 @@
 let mysql = require('../../lib/db');
 
 const handler = async(req, res) => {
+    const error = "ERROR: There was an error.";
     const noResults = "ERROR: There were no results found from the supplied category id.";
     const queryError = "ERROR: There is either no query or insufficient information in the query supplied.";
     const methodError = "ERROR: The requested method is not valid for this route.";
@@ -11,7 +12,7 @@ const handler = async(req, res) => {
             if(req.query.categoryid) {
                 mysql.pool.getConnection((err, conn) => {
                     if (err) throw err;
-                    conn.query("SELECT * FROM `questions` WHERE categoryid = ?", [req.query.categoryid], async(err, results) => {
+                    conn.query("SELECT * FROM `vw_QuestionView` WHERE `categoryid` = ?", [req.query.categoryid], async(err, results) => {
                         if (err) throw err;
                         if (results.length > 0) {
                             console.log(`Retrieved questions at ${req.query.categoryid} successfully!`);
@@ -25,8 +26,23 @@ const handler = async(req, res) => {
                     conn.release();
                 })
             }
+            else if (req.query.qid) {
+                mysql.pool.getConnection((err, conn) => {
+                    if (err) throw err;
+                    conn.query("SELECT * FROM `vw_QuestionView` WHERE `questionid` = ?", [req.query.qid], async(err, results) => {
+                        if (err) throw err;
+                        if (results.length > 0) {
+                            res.send({results});
+                        }
+                        else {
+                            res.send({error});
+                        }
+                    });
+
+                })
+            }
             else {
-                // In the future, there may possibly be a system that shows all questions.
+                // In the future, there may possibly be a system that shows all questions for all categories.
             }
         }
         else {
@@ -38,7 +54,7 @@ const handler = async(req, res) => {
         // Handle inserting a question here.
         mysql.pool.getConnection((err, conn) => {
             if (err) throw err;
-            conn.query("INSERT INTO `questions` (`categoryid`, `question`, `questiondetails`, `author`, `askdate`) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP())", [req.body.categoryid, req.body.question, req.body.questionDetails, req.body.author], async(err, results) => {
+            conn.query("INSERT INTO `questions` (`authorid`, `categoryid`, `question`, `questiondetails`,  `askdate`) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP())", [req.body.userid, req.body.categoryid, req.body.question, req.body.questionDetails], async(err, results) => {
                 if (err) throw err;
                 else {
                     console.log(results);

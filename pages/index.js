@@ -1,5 +1,3 @@
-import { calculateObjectSize } from 'bson'
-import { delBasePath } from 'next/dist/shared/lib/router/router'
 import Head from 'next/head'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
@@ -47,11 +45,12 @@ export default function Home() {
   const fetchQuestions = async () => {
     let data = await fetch(`/api/question?categoryid=${currentCategory}`);
     data = await data.json();
+    console.log(data.results)
     if(data.results) {
       // Handle if there are results
       let tempArray = [];
       data.results.map((item) => {
-        return tempArray.push([item.question, item.author]);
+        return tempArray.push({questionid: item.questionid, question: item.question, author: item.author});
       })
       setQuestionsList(tempArray);
     }
@@ -99,7 +98,7 @@ export default function Home() {
       body: JSON.stringify({
         question: questionText,
         questionDetails: detailsText,
-        author: sessionStorage.username,
+        userid: sessionStorage.userid,
         categoryid: currentCategory
       })
     });
@@ -153,16 +152,17 @@ export default function Home() {
                 <label htmlFor={"details"}> Details <br />
                   <textarea value={detailsText} onChange={handleDetailsText} rows={4} cols={24} maxLength={200} readOnly={!sessionStorage.getItem("userid")} required />
                 </label> <p />
-                <button type="submit" onClick={submitQuestion}>Submit</button>
+                {sessionStorage.getItem("userid") && (
+                  <button type="submit" onClick={submitQuestion}>Submit</button>
+                )}
               </section>
               <section style={{ marginTop: "40px" }} name={"previousQuestions"}>
                 <h3>Previous Questions</h3>
                 <ul style={{listStyleType: 'none'}}>
                 {questionsList.length > 0 && questionsList.map((item, idx) => {
-                  if(item[0].length > 1) {
-                    // Check if the item length is > 1 (more than one letter) so we can tell that we have actual questions in the array.
-                    // Definitely not the most ideal way to do it, but it works
-                    return <li key={idx}><Link href={`/question`} passHref>{item[0]}</Link><div>by <strong>{item[1]}</strong></div></li>
+                  if(item.questionid && item.question && item.author) {
+                    // Check if we actually have questions in the array.
+                    return <li key={idx}><Link href={`/question?qid=${item.questionid}`} passHref>{item.question}</Link><div>by <strong>{item.author}</strong></div></li>
                   }
                   else {
                     // No results from the database
