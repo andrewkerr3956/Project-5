@@ -6,11 +6,49 @@ export default function Category(props) {
     const [questionsList, setQuestionsList] = useState([]); // The questions list will hold the questions obtained from the chosen categories
     // When the page is loaded, determine if their is a user logged in. If not, display that they must login to create questions.
     useEffect(() => {
+        // Handles if user is not logged in
         if (!sessionStorage.getItem("userid")) {
             setQuestionText("Login to create a question.")
             setDetailsText("You must be logged in to create a question.")
         }
     }, []);
+    useEffect(() => {
+        // Handles if the user refreshes the page to match the current selected category and fetch the questions for them
+        const fetchCategoryTitle = async () => {
+            let searchParams = new URLSearchParams(window.location.search) 
+            if (searchParams.has('id')) { // Check if the url contains an categoryid
+                props.setCurrentCategory(searchParams.get('id'));
+                let data = await fetch(`/api/category?id=${searchParams.get('id')}`);
+                data = await data.json();
+                props.setCategoryTitle(data.results[0].category);
+                
+            }
+        }
+        fetchCategoryTitle();
+    }, []);
+    useEffect(() => {
+        fetchQuestions();
+    }, [props.currentCategory]);
+
+    const fetchQuestions = async () => {
+        let data = await fetch(`/api/question?categoryid=${props.currentCategory}`);
+        data = await data.json();
+        if(data.results) {
+          // Handle if there are results
+          let tempArray = [];
+          data.results.map((item) => {
+            return tempArray.push({questionid: item.questionid, question: item.question, author: item.author, askdate: item.askdate});
+          })
+          tempArray.reverse()
+          setQuestionsList(tempArray);
+        }
+        else {
+          // Handle no results
+          let tempArray = [];
+          tempArray.push("There are currently no questions.");
+          setQuestionsList(tempArray);
+        }
+      }
 
     const handleQuestionText = async (event) => {
         setQuestionText(event.target.value);
@@ -31,13 +69,14 @@ export default function Category(props) {
                 question: questionText,
                 questionDetails: detailsText,
                 userid: sessionStorage.userid,
-                categoryid: currentCategory
+                categoryid: props.currentCategory
             })
         });
         data = await data.json();
         if (data.success) {
             alert("Question has been successfully created!");
         }
+        window.location.reload();
     }
     return (
         <>

@@ -181,7 +181,7 @@ export default function Home() {
       <footer>
 
       </footer> */}
-      Heyy
+      <h2>Please select a category.</h2>
     </div>
 
   )

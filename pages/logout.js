@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-const Logout = () => {
+export default function Logout() {
     useEffect(() => { // Log the user out
         if (!sessionStorage.userid) {
             window.location.pathname = '/';
@@ -20,5 +20,3 @@ const Logout = () => {
         </div>
     )
 }
-
-export default Logout;

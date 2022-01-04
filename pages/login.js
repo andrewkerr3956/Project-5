@@ -27,7 +27,7 @@ const CheckLogin = async (user, pass) => {
     }
 }
 
-const Login = () => {
+export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     useEffect(() => {
@@ -56,5 +56,3 @@ const Login = () => {
         </div>
     )
 }
-
-export default Login;

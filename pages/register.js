@@ -34,7 +34,7 @@ const AddUser = async (user, pass, repeatPass) => {
     }
 }
 
-const Register = () => {
+export default function Register() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [repeatPassword, setRepeatPassword] = useState("");
@@ -70,5 +70,3 @@ const Register = () => {
         </div>
     )
 }
-
-export default Register;
