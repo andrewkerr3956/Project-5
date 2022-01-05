@@ -38,7 +38,7 @@ const handler = async(req, res) => {
                             res.send({error});
                         }
                     });
-
+                    conn.release();
                 })
             }
             else {
@@ -52,20 +52,31 @@ const handler = async(req, res) => {
     else if(req.method == 'POST') {
         const success = "Question successfully inserted.";
         // Handle inserting a question here.
-        mysql.pool.getConnection((err, conn) => {
-            if (err) throw err;
-            conn.query("INSERT INTO `questions` (`authorid`, `categoryid`, `question`, `questiondetails`,  `askdate`) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP())", [req.body.userid, req.body.categoryid, req.body.question, req.body.questionDetails], async(err, results) => {
+        if(req.body.question) {
+            mysql.pool.getConnection((err, conn) => {
                 if (err) throw err;
-                else {
-                    console.log(results);
-                    res.send({success});
-                }
+                conn.query("INSERT INTO `questions` (`authorid`, `categoryid`, `question`, `questiondetails`,  `askdate`) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP())", [req.body.userid, req.body.categoryid, req.body.question, req.body.questionDetails], async(err, results) => {
+                    if (err) throw err;
+                    else {
+                        console.log(results);
+                        res.send({success});
+                    }
+                });
+                conn.release();
             });
-            conn.release();
-        });
+        }
+        else {
+            res.send({error: "Invalid"})
+        }
     }
     else if(req.method == 'PUT') {
         // Handle updating a question here.
+        if(req.body.question) {
+            res.send({updateSuccess: "Question updated successfully!"})
+        }
+        else {
+            res.send({error: "There was an error."})
+        }
     }
     else if(req.method == 'DELETE') {
         // Handle deleting a question here.

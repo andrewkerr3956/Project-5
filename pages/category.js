@@ -15,13 +15,13 @@ export default function Category(props) {
     useEffect(() => {
         // Handles if the user refreshes the page to match the current selected category and fetch the questions for them
         const fetchCategoryTitle = async () => {
-            let searchParams = new URLSearchParams(window.location.search) 
+            let searchParams = new URLSearchParams(window.location.search)
             if (searchParams.has('id')) { // Check if the url contains an categoryid
                 props.setCurrentCategory(searchParams.get('id'));
                 let data = await fetch(`/api/category?id=${searchParams.get('id')}`);
                 data = await data.json();
                 props.setCategoryTitle(data.results[0].category);
-                
+
             }
         }
         fetchCategoryTitle();
@@ -33,22 +33,22 @@ export default function Category(props) {
     const fetchQuestions = async () => {
         let data = await fetch(`/api/question?categoryid=${props.currentCategory}`);
         data = await data.json();
-        if(data.results) {
-          // Handle if there are results
-          let tempArray = [];
-          data.results.map((item) => {
-            return tempArray.push({questionid: item.questionid, question: item.question, author: item.author, askdate: item.askdate});
-          })
-          tempArray.reverse()
-          setQuestionsList(tempArray);
+        if (data.results) {
+            // Handle if there are results
+            let tempArray = [];
+            data.results.map((item) => {
+                return tempArray.push({ questionid: item.questionid, question: item.question, author: item.author, askdate: item.askdate });
+            })
+            tempArray.reverse()
+            setQuestionsList(tempArray);
         }
         else {
-          // Handle no results
-          let tempArray = [];
-          tempArray.push("There are currently no questions.");
-          setQuestionsList(tempArray);
+            // Handle no results
+            let tempArray = [];
+            tempArray.push("There are currently no questions.");
+            setQuestionsList(tempArray);
         }
-      }
+    }
 
     const handleQuestionText = async (event) => {
         setQuestionText(event.target.value);
@@ -60,23 +60,31 @@ export default function Category(props) {
 
     const submitQuestion = async () => {
         // Handles submitting a question.
-        let data = await fetch(`/api/question`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                question: questionText,
-                questionDetails: detailsText,
-                userid: sessionStorage.userid,
-                categoryid: props.currentCategory
-            })
-        });
-        data = await data.json();
-        if (data.success) {
-            alert("Question has been successfully created!");
+        if (questionText.length >= 15 && questionText.length <= 200 && detailsText.length <= 500) { 
+            /* Only add the question to the database if it's at least 15 characters long. The other 2 conditions are to make sure it doesn't exceed
+            the database's set maximum lengths. */
+            let data = await fetch(`/api/question`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    question: questionText,
+                    questionDetails: detailsText,
+                    userid: sessionStorage.userid,
+                    categoryid: props.currentCategory
+                })
+            });
+            data = await data.json();
+            if (data.success) {
+                alert("Question has been successfully created!");
+            }
+            window.location.reload();
         }
-        window.location.reload();
+        else {
+            alert("The question must be between 15 and 200 characters long. The additional details can have a maximum of 500 characters.");
+        }
+
     }
     return (
         <>
@@ -87,7 +95,7 @@ export default function Category(props) {
                     <input type="text" value={questionText} onChange={handleQuestionText} maxLength={200} readOnly={!props.userActive} required />
                 </label> <p />
                 <label htmlFor={"details"}> Details <br />
-                    <textarea value={detailsText} onChange={handleDetailsText} rows={4} cols={24} maxLength={200} readOnly={!props.userActive} required />
+                    <textarea value={detailsText} onChange={handleDetailsText} rows={4} cols={24} maxLength={200} readOnly={!props.userActive} />
                 </label> <p />
                 {props.userActive && (
                     <button type="submit" onClick={submitQuestion}>Submit</button>

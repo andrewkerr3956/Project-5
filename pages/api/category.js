@@ -8,7 +8,7 @@ const handler = async (req, res) => {
             mysql.pool.getConnection((err, conn) => {
                 if (err) throw err;
                 else {
-                    conn.execute("SELECT * FROM categories WHERE categoryid = ?", [req.query.id], async (err, results) => {
+                    conn.query("SELECT * FROM categories WHERE categoryid = ?", [req.query.id], async (err, results) => {
                         if (err) throw err;
                         if (results.length > 0) {
                             console.log(results);
@@ -24,7 +24,7 @@ const handler = async (req, res) => {
             mysql.pool.getConnection((err, conn) => {
                 if (err) throw err;
                 else {
-                    conn.execute("SELECT * FROM categories", async (err, results) => {
+                    conn.query("SELECT * FROM categories", async (err, results) => {
                         if (err) throw err;
                         if (results.length > 0) {
                             console.log(results);

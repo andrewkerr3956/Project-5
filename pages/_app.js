@@ -12,7 +12,7 @@ function GetProps() {
   const [categoryTitle, setCategoryTitle] = useState("");
   const [currentCategory, setCurrentCategory] = useState(0);
   useEffect(() => {
-    if(sessionStorage.getItem("userid")) {
+    if(sessionStorage.getItem("userid")) { // If there is a user active, make sure to let the rest of the application know.
       setUserActive(true);
     }
   }, [])
