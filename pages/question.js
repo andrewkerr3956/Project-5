@@ -1,44 +1,50 @@
-import { useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 
-const Question = () => {
+const Question = (props) => {
     const [error, setError] = useState(false);
     const [success, setSuccess] = useState(false);
     const [question, setQuestion] = useState("");
     const [questionDetails, setQuestionDetails] = useState("");
     const [author, setAuthor] = useState("");
+    const [askDate, setAskDate] = useState(undefined);
     useEffect(() => {
         // Obtain the query parameters from the url.
         let questionid = new URLSearchParams(window.location.search);
         questionid = questionid.get('qid');
         // Fetch the data from the api with the given url
-        const fetchData = async() => {
+        const fetchData = async () => {
             let data = await fetch(`/api/question?qid=${questionid}`);
             data = await data.json();
-            if(data.error) {
+            if (data.error) {
                 setError(true);
             }
             else {
                 setSuccess(true);
+                props.setCurrentCategory(data.results[0].categoryid);
                 setQuestion(data.results[0].question);
                 setQuestionDetails(data.results[0].questiondetails);
                 setAuthor(data.results[0].author);
+                setAskDate(data.results[0].askdate);
             }
         }
         fetchData();
     }, [])
     return (
         <div className={'questionContainer'}>
-            The verdict is: <br />
             {error && (
                 <div>Error.</div>
             )}
             {success && (
-                <div>
-                <div>Success!</div>  <p /> <p />
-                <div>Data found: </div>
-                <div>Question: {question}</div>
-                <div>Details: {questionDetails}</div>
-                <div>Author: {author}</div>
+                <div style={{ textAlign: 'left' }}>
+                    <section name="questionSection">
+                        <div style={{ fontSize: '1.2rem' }}><strong>{question}</strong></div>
+                        <div>{questionDetails}</div>
+                        <div>Asked by: <strong>{author}</strong> on <strong>{askDate}</strong></div>
+                    </section> <p />
+                    <section name="answerSection">
+                        <div style={{fontSize: '1.4rem'}}><strong>Answers</strong></div>
+                        {/* Map answers here */}
+                    </section>
                 </div>
             )}
         </div>
