@@ -99,7 +99,7 @@ export default function Category(props) {
                     {questionsList.length > 0 && questionsList.map((item, idx) => {
                         if (item.questionid && item.question && item.author) {
                             // Check if we actually have questions in the array.
-                            return <li key={idx}><Link href={`/question?qid=${item.questionid}`} passHref>{item.question}</Link><div>by <strong>{item.author}</strong></div></li>
+                            return <li key={idx}><Link href={`/question?qid=${item.questionid}`} passHref>{item.question}</Link><div>asked by <strong>{item.author}</strong> on <strong>{item.askdate}</strong></div></li>
                         }
                         else {
                             // No results from the database
