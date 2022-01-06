@@ -9,6 +9,7 @@ const Question = (props) => {
     const [askDate, setAskDate] = useState(undefined);
     const [answerText, setAnswerText] = useState("");
     const [answers, setAnswers] = useState([]);
+    const [correctAnswer, setCorrectAnswer] = useState(null);
     useEffect(() => {
         // Obtain the query parameters from the url.
         let questionid = new URLSearchParams(window.location.search);
@@ -27,6 +28,7 @@ const Question = (props) => {
                 setQuestionDetails(data.results[0].questiondetails);
                 setAuthor(data.results[0].author);
                 setAskDate(data.results[0].askdate);
+                setCorrectAnswer(data.results[0].correctid);
             }
         }
         fetchQuestionData();
@@ -44,6 +46,16 @@ const Question = (props) => {
                 data.results.map((item, idx) => {
                     return tempArray.push({ answerid: item.answerid, answer: item.answer, author: item.author, answerdate: item.answerdate });
                 });
+                tempArray.map((item, idx) => {
+                    if(item.answerid == correctAnswer) {
+                        let correctIdx = item.answerid;
+                        let tempItem = item // Hold the item so we can swap it's index position in the array
+                        tempArray[correctIdx] = tempArray[0]; // Make the correct answer the first one in the list.
+                        tempArray[0] = tempItem;
+
+                    }
+                })
+                tempArray.reverse();
                 setAnswers(tempArray);
             }
             else {
@@ -94,6 +106,29 @@ const Question = (props) => {
 
     }
 
+    const markCorrect = async (event) => {
+        let questionid = new URLSearchParams(window.location.search);
+        questionid = questionid.get('qid');
+        let data = await fetch('/api/question', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                questionid: questionid,
+                correct: event.target.id
+            })
+        })
+        data = await data.json();
+        if (data.error) {
+            alert(data.error);
+        }
+        else {
+            alert(data.success);
+            window.location.reload();
+        }
+    }
+
     const handleAnswerText = async (event) => {
         setAnswerText(event.target.value);
     }
@@ -118,12 +153,25 @@ const Question = (props) => {
                         <ul style={{ display: 'flex', flexFlow: 'row wrap', justifyContent: 'center', listStyleType: 'none' }}>
                             {answers.length > 0 && answers.map((item, idx) => {
                                 if (item.answerid && item.answer && item.author) { // Check if the answer actually exists.
-                                    return (
-                                        <li key={item.answerid} style={{ marginTop: '2%', width: '80%', border: '2px solid black', borderRadius: '2px', backgroundColor: 'lightblue' }}>
-                                            <div>{item.answer}</div>
-                                            <div>answered by <strong>{item.author}</strong> on <strong>{item.answerdate}</strong></div>
-                                        </li>
-                                    )
+                                    if (item.answerid == correctAnswer) { // if the answer is the correct answer
+                                        return (
+                                            <li key={item.answerid} style={{ marginTop: '2%', width: '80%', border: '2px solid black', borderRadius: '2px', backgroundColor: 'lightgreen' }}>
+                                                <div><span title={"Marked as correct answer"} style={{color: 'darkgreen', fontSize: '2rem', fontWeight: '600', float: 'left', marginLeft: '5px'}}>✓</span>{item.answer}</div>
+                                                <div>answered by <strong>{item.author}</strong> on <strong>{item.answerdate}</strong></div>
+                                            </li>
+                                        )
+                                    }
+                                    else {
+                                        return (
+                                            <li key={item.answerid} style={{ marginTop: '2%', width: '80%', border: '2px solid black', borderRadius: '2px', backgroundColor: 'lightblue' }}>
+                                                <div>{item.answer}</div>
+                                                <div>answered by <strong>{item.author}</strong> on <strong>{item.answerdate}</strong></div>
+                                                {sessionStorage.getItem("username") == author && (
+                                                    <button id={item.answerid} onClick={markCorrect}>Mark Correct</button>
+                                                )}
+                                            </li>
+                                        )
+                                    }
                                 }
                                 else {
                                     return <li key={idx}>{item}</li>

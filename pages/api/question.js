@@ -48,6 +48,7 @@ const handler = async(req, res) => {
         else {
             res.send({queryError})
         }
+        
     }
     else if(req.method == 'POST') {
         const success = "Question successfully inserted.";
@@ -73,6 +74,23 @@ const handler = async(req, res) => {
         // Handle updating a question here.
         if(req.body.question) {
             res.send({updateSuccess: "Question updated successfully!"})
+        }
+        else if(req.body.correct) {
+            // Handle updating the correct answer to a question.
+            mysql.pool.getConnection((err, conn) => {
+                if (err) throw err;
+                conn.query("UPDATE `questions` SET `correct` = ? WHERE `questionid` = ?", [req.body.correct, req.body.questionid], async(err, results) => {
+                    if (err) throw err;
+                    console.log(results);
+                    if(results.changedRows > 0) {
+                        res.send({ success: "Correct answer updated!" });
+                    }
+                    else {
+                        res.send({ error: "There was an error." });
+                    }
+                    conn.release();
+                })
+            })
         }
         else {
             res.send({error: "There was an error."})

@@ -8,7 +8,7 @@ const handler = async (req, res) => {
                 console.log("GET Answers at Question ID");
                 mysql.pool.getConnection((err, conn) => {
                     if (err) throw err;
-                    conn.query("SELECT * FROM vw_AnswerView WHERE questionid = ?", [req.query.qid], async(err, results) => {
+                    conn.query("SELECT * FROM `vw_AnswerView` WHERE `questionid` = ?", [req.query.qid], async(err, results) => {
                         if (err) throw err;
                         if(results.length > 0) {
                             res.send({ results });
@@ -33,7 +33,7 @@ const handler = async (req, res) => {
         if (req.body.answer) {
             mysql.pool.getConnection((err, conn) => {
                 if (err) throw err;
-                conn.query("INSERT INTO Answers (questionid, authorid, answer, answerdate) VALUES (?, ?, ?, CURRENT_TIMESTAMP())", [req.body.questionid, req.body.authorid, req.body.answer], async (err, results) => {
+                conn.query("INSERT INTO `Answers` (`questionid`, `authorid`, `answer`, `answerdate`) VALUES (?, ?, ?, CURRENT_TIMESTAMP())", [req.body.questionid, req.body.authorid, req.body.answer], async (err, results) => {
                     if (err) throw err;
                     if (results) {
                         res.send({ success: "Answer successfully added!" });
