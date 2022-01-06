@@ -98,7 +98,19 @@ const handler = async(req, res) => {
     }
     else if(req.method == 'DELETE') {
         // Handle deleting a question here.
-        
+        mysql.pool.getConnection((err, conn) => {
+            if (err) throw err;
+            conn.query("DELETE FROM `questions` WHERE `questionid` = ?", [req.body.questionid], async(err, results) => {
+                if (err) throw err;
+                if (results.affectedRows > 0) {
+                    res.send({ success: "Question successfully deleted!" });
+                }
+                else {
+                    res.send({ error: "There was an error." });
+                }
+            });
+            conn.release();
+        });
     }
     else {
         // The method is not valid. Return that information to the front-end.

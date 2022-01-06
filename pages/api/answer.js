@@ -49,6 +49,24 @@ const handler = async (req, res) => {
             res.send({error: "There was an error." })
         }
     }
+    else if (req.method == 'DELETE') {
+        mysql.pool.getConnection((err, conn) => {
+            if (err) throw err;
+            conn.query("DELETE FROM `answers` WHERE `answerid` = ?", [req.body.answerid], async(err, results) => {
+                if (err) throw err;
+                if (results.affectedRows > 0) {
+                    res.send({ success: "Answer successfully deleted!"} );
+                }
+                else {
+                    res.send({ error: "There was an error."} );
+                }
+            });
+            conn.release();
+        });
+    }
+    else {
+        res.send({ error: "That method is not accepted." })
+    }
 }
 
 export default handler;

@@ -10,12 +10,13 @@ const Question = (props) => {
     const [answerText, setAnswerText] = useState("");
     const [answers, setAnswers] = useState([]);
     const [correctAnswer, setCorrectAnswer] = useState(null);
+
     useEffect(() => {
-        // Obtain the query parameters from the url.
-        let questionid = new URLSearchParams(window.location.search);
-        questionid = questionid.get('qid');
         // Fetch the data from the api with the given url
         const fetchQuestionData = async () => {
+            // Obtain the query parameters from the url.
+            let questionid = new URLSearchParams(window.location.search);
+            questionid = questionid.get('qid');
             let data = await fetch(`/api/question?qid=${questionid}`);
             data = await data.json();
             if (data.error) {
@@ -47,7 +48,7 @@ const Question = (props) => {
                     return tempArray.push({ answerid: item.answerid, answer: item.answer, author: item.author, answerdate: item.answerdate });
                 });
                 tempArray.map((item, idx) => {
-                    if(item.answerid == correctAnswer) {
+                    if (item.answerid == correctAnswer) {
                         let correctIdx = item.answerid;
                         let tempItem = item // Hold the item so we can swap it's index position in the array
                         tempArray[correctIdx] = tempArray[0]; // Make the correct answer the first one in the list.
@@ -77,9 +78,10 @@ const Question = (props) => {
 
     const submitAnswer = async () => {
         if (answerText.length >= 15 && answerText.length <= 500) {
+            // If the answer is at least 15 characters long.
+            // Obtain the query parameters from the url.
             let questionid = new URLSearchParams(window.location.search);
             questionid = questionid.get('qid');
-            // If the answer is at least 15 characters long.
             let data = await fetch('/api/answer', {
                 method: 'POST',
                 headers: {
@@ -107,8 +109,6 @@ const Question = (props) => {
     }
 
     const markCorrect = async (event) => {
-        let questionid = new URLSearchParams(window.location.search);
-        questionid = questionid.get('qid');
         let data = await fetch('/api/question', {
             method: 'PUT',
             headers: {
@@ -117,6 +117,49 @@ const Question = (props) => {
             body: JSON.stringify({
                 questionid: questionid,
                 correct: event.target.id
+            })
+        })
+        data = await data.json();
+        if (data.error) {
+            alert(data.error);
+        }
+        else {
+            alert(data.success);
+            window.location.reload();
+        }
+    }
+
+    const deleteQuestion = async (event) => {
+        // Obtain the query parameters from the url.
+        let questionid = new URLSearchParams(window.location.search);
+        questionid = questionid.get('qid');
+        let data = await fetch('/api/question', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                questionid: questionid
+            })
+        })
+        data = await data.json();
+        if (data.error) {
+            alert(data.error);
+        }
+        else {
+            alert(data.success);
+            window.location.reload();
+        }
+    }
+
+    const deleteAnswer = async (event) => {
+        let data = await fetch('/api/answer', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                answerid: event.target.id
             })
         })
         data = await data.json();
@@ -143,6 +186,9 @@ const Question = (props) => {
                         <div style={{ fontSize: '1.2rem' }}><strong>{question}</strong></div>
                         <div>{questionDetails}</div>
                         <div>Asked by: <strong>{author}</strong> on <strong>{askDate}</strong></div>
+                        {sessionStorage.getItem("username") == author && (
+                            <button onClick={deleteQuestion}>Delete Question</button>
+                        )}
                     </section> <p />
                     <section name="answerSection">
                         <div style={{ fontSize: '1.4rem' }}><strong>Answers</strong></div> <p />
@@ -156,8 +202,12 @@ const Question = (props) => {
                                     if (item.answerid == correctAnswer) { // if the answer is the correct answer
                                         return (
                                             <li key={item.answerid} style={{ marginTop: '2%', width: '80%', border: '2px solid black', borderRadius: '2px', backgroundColor: 'lightgreen' }}>
-                                                <div><span title={"Marked as correct answer"} style={{color: 'darkgreen', fontSize: '2rem', fontWeight: '600', float: 'left', marginLeft: '5px'}}>✓</span>{item.answer}</div>
+                                                <div><span title={"Marked as correct answer"} style={{ color: 'darkgreen', fontSize: '2rem', fontWeight: '600', float: 'left', marginLeft: '5px' }}>✓</span>{item.answer}</div>
                                                 <div>answered by <strong>{item.author}</strong> on <strong>{item.answerdate}</strong></div>
+                                                {/* Show a delete button for the answer if user is logged in as the answer author. */}
+                                                {sessionStorage.getItem("username") == item.author && (
+                                                    <button id={item.answerid} onClick={deleteAnswer}>Delete</button>
+                                                )}
                                             </li>
                                         )
                                     }
@@ -166,7 +216,12 @@ const Question = (props) => {
                                             <li key={item.answerid} style={{ marginTop: '2%', width: '80%', border: '2px solid black', borderRadius: '2px', backgroundColor: 'lightblue' }}>
                                                 <div>{item.answer}</div>
                                                 <div>answered by <strong>{item.author}</strong> on <strong>{item.answerdate}</strong></div>
-                                                {sessionStorage.getItem("username") == author && (
+                                                {/* Show a delete button for the answer if user is logged in as the answer author. */}
+                                                {sessionStorage.getItem("username") == item.author && (
+                                                    <button id={item.answerid} onClick={deleteAnswer}>Delete</button>
+                                                )}
+                                                {/* Check if the user logged in as the author of the question, and if there is no correct answer. */}
+                                                {sessionStorage.getItem("username") == author && correctAnswer == null && (
                                                     <button id={item.answerid} onClick={markCorrect}>Mark Correct</button>
                                                 )}
                                             </li>
