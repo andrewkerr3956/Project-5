@@ -10,6 +10,8 @@ const Question = (props) => {
     const [answerText, setAnswerText] = useState("");
     const [answers, setAnswers] = useState([]);
     const [correctAnswer, setCorrectAnswer] = useState(null);
+    const [editAnswerActive, setEditAnswerActive] = useState(false);
+    const [editAnswerText, setEditAnswerText] = useState("");
 
     useEffect(() => {
         // Fetch the data from the api with the given url
@@ -45,7 +47,7 @@ const Question = (props) => {
                 // Handle Results
                 let tempArray = [];
                 data.results.map((item, idx) => {
-                    return tempArray.push({ answerid: item.answerid, answer: item.answer, author: item.author, answerdate: item.answerdate });
+                    return tempArray.push({ answerid: item.answerid, answer: item.answer, author: item.author, answerdate: item.answerdate, editdate: item.editdate });
                 });
                 tempArray.map((item, idx) => {
                     if (item.answerid == correctAnswer) {
@@ -109,6 +111,9 @@ const Question = (props) => {
     }
 
     const markCorrect = async (event) => {
+        // Obtain the query parameters from the url.
+        let questionid = new URLSearchParams(window.location.search);
+        questionid = questionid.get('qid');
         let data = await fetch('/api/question', {
             method: 'PUT',
             headers: {
@@ -148,7 +153,7 @@ const Question = (props) => {
         }
         else {
             alert(data.success);
-            window.location.reload();
+            window.location.replace(`/category?id=${props.currentCategory}`);
         }
     }
 
@@ -172,9 +177,59 @@ const Question = (props) => {
         }
     }
 
+    const updateQuestion = async (event) => {
+        // Obtain the query parameters from the url.
+        let questionid = new URLSearchParams(window.location.search);
+        questionid = questionid.get('qid');
+        let data = await fetch('/api/question', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                questionid: questionid, question: updateQuestionText
+            })
+        });
+    }
+
+    const updateAnswer = async (event) => {
+        if (editAnswerText != "" && editAnswerText != null && editAnswerText.length >= 15 && editAnswerText.length <= 500) {
+            let data = await fetch('/api/answer', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    answerid: event.target.id, answer: editAnswerText
+                })
+            });
+            data = await data.json();
+            if (data.error) {
+                alert(data.error);
+            }
+            else {
+                alert(data.success);
+                window.location.reload();
+            }
+        }
+        else {
+            alert("The answer must be between 15 and 500 characters long.");
+        }
+    }
+
+    const editAnswer = async (answer) => {
+        setEditAnswerText(answer);
+        setEditAnswerActive(true);
+    }
+
     const handleAnswerText = async (event) => {
         setAnswerText(event.target.value);
     }
+
+    const handleEditAnswerText = async (event) => {
+        setEditAnswerText(event.target.value);
+    }
+
     return (
         <div className={'questionContainer'}>
             {error && (
@@ -202,11 +257,30 @@ const Question = (props) => {
                                     if (item.answerid == correctAnswer) { // if the answer is the correct answer
                                         return (
                                             <li key={item.answerid} style={{ marginTop: '2%', width: '80%', border: '2px solid black', borderRadius: '2px', backgroundColor: 'lightgreen' }}>
-                                                <div><span title={"Marked as correct answer"} style={{ color: 'darkgreen', fontSize: '2rem', fontWeight: '600', float: 'left', marginLeft: '5px' }}>✓</span>{item.answer}</div>
-                                                <div>answered by <strong>{item.author}</strong> on <strong>{item.answerdate}</strong></div>
-                                                {/* Show a delete button for the answer if user is logged in as the answer author. */}
-                                                {sessionStorage.getItem("username") == item.author && (
-                                                    <button id={item.answerid} onClick={deleteAnswer}>Delete</button>
+                                                {editAnswerActive && (
+                                                    <div>
+                                                        <textarea value={editAnswerText} onChange={handleEditAnswerText} /> <p />
+                                                        <button onClick={() => setEditAnswerActive(false)}>Cancel</button>
+                                                        <button id={item.answerid} onClick={updateAnswer}>Submit Changes</button>
+                                                    </div>
+                                                )}
+                                                {!editAnswerActive && (
+                                                    <>
+                                                        <div><span title={"Marked as correct answer"} style={{ color: 'darkgreen', fontSize: '2rem', fontWeight: '600', float: 'left', marginLeft: '5px' }}>✓</span>{item.answer}</div>
+                                                        {/* Show if the answer has been edited. */}
+                                                        {item.editdate && (
+                                                            <div>edited on <strong>{item.editdate}</strong></div>
+                                                        )}
+                                                        <div>answered by <strong>{item.author}</strong> on <strong>{item.answerdate}</strong></div>
+                                                        {/* Show a edit button for the answer if user is logged in as the answer author. */}
+                                                        {sessionStorage.getItem("username") == item.author && (
+                                                            <button id={item.answerid} onClick={() => editAnswer(item.answer)}>Edit</button>
+                                                        )}
+                                                        {/* Show a delete button for the answer if user is logged in as the answer author. */}
+                                                        {sessionStorage.getItem("username") == item.author && (
+                                                            <button id={item.answerid} onClick={deleteAnswer}>Delete</button>
+                                                        )}
+                                                    </>
                                                 )}
                                             </li>
                                         )
@@ -214,15 +288,34 @@ const Question = (props) => {
                                     else {
                                         return (
                                             <li key={item.answerid} style={{ marginTop: '2%', width: '80%', border: '2px solid black', borderRadius: '2px', backgroundColor: 'lightblue' }}>
-                                                <div>{item.answer}</div>
-                                                <div>answered by <strong>{item.author}</strong> on <strong>{item.answerdate}</strong></div>
-                                                {/* Show a delete button for the answer if user is logged in as the answer author. */}
-                                                {sessionStorage.getItem("username") == item.author && (
-                                                    <button id={item.answerid} onClick={deleteAnswer}>Delete</button>
+                                                {editAnswerActive && (
+                                                    <div>
+                                                        <textarea value={editAnswerText} onChange={handleEditAnswerText} /> <p />
+                                                        <button onClick={() => setEditAnswerActive(false)}>Cancel</button>
+                                                        <button id={item.answerid} onClick={updateAnswer}>Submit Changes</button>
+                                                    </div>
                                                 )}
-                                                {/* Check if the user logged in as the author of the question, and if there is no correct answer. */}
-                                                {sessionStorage.getItem("username") == author && correctAnswer == null && (
-                                                    <button id={item.answerid} onClick={markCorrect}>Mark Correct</button>
+                                                {!editAnswerActive && (
+                                                    <>
+                                                        <div>{item.answer}</div>
+                                                        {/* Show if the answer has been edited. */}
+                                                        {item.editdate && (
+                                                            <div>edited on <strong>{item.editdate}</strong></div>
+                                                        )}
+                                                        <div>answered by <strong>{item.author}</strong> on <strong>{item.answerdate}</strong></div>
+                                                        {/* Show a edit button for the answer if user is logged in as the answer author. */}
+                                                        {sessionStorage.getItem("username") == item.author && (
+                                                            <button id={item.answerid} onClick={() => editAnswer(item.answer)}>Edit</button>
+                                                        )}
+                                                        {/* Show a delete button for the answer if user is logged in as the answer author. */}
+                                                        {sessionStorage.getItem("username") == item.author && (
+                                                            <button id={item.answerid} onClick={deleteAnswer}>Delete</button>
+                                                        )}
+                                                        {/* Check if the user logged in as the author of the question, and if there is no correct answer. */}
+                                                        {sessionStorage.getItem("username") == author && correctAnswer == null && (
+                                                            <button id={item.answerid} onClick={markCorrect}>Mark Correct</button>
+                                                        )}
+                                                    </>
                                                 )}
                                             </li>
                                         )
