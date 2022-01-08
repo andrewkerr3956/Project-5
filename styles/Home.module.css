@@ -22,27 +22,44 @@
 }
 
 @media screen and (max-width: 576px) {
+    .container {
+      padding: 0 !important;
+    }
     .navContainer {
-      flex-flow: row !important;
-      position: relative !important;
+      flex-flow: row;
+      position: relative;
       height: 10vh !important;
       width: 100% !important;
     }
     .navItem {
       height: 10vh !important;
       width: 100% !important;
-      padding: 5% !important;
     }
     .active {
       height: 10vh !important;
       width: 100% !important;
-      padding: 5% !important;
     }
     .mainContainer {
       left: 0% !important;
       position: relative !important;
       width: 100% !important;
     }
+}
+
+@media screen and (max-width: 300px) {
+  .headerContainer {
+    text-align: center !important;
+    padding: 2vh !important;
+    width: 40vh !important;
+  }
+  .navContainer {
+    width: 40vh !important;
+  }
+  .mainContainer {
+    left: 20% !important;
+    text-align: center !important;
+    width: 100% !important;
+  }
 }
 
 .navItem {

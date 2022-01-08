@@ -19,6 +19,12 @@ label {
   font-weight: bold;
 }
 
+@media screen and (max-width: 380px) {
+  input {
+    width: 80%;
+  }
+}
+
 input[readOnly] {
   background-color: lightgray;
 }

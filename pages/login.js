@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 const CheckLogin = async (user, pass) => {
     event.preventDefault();
@@ -48,6 +49,7 @@ export default function Login() {
                         <label htmlFor="password">Password <br />
                             <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} required maxLength={200} />
                         </label> <p />
+                        <em><Link href={'/register'} passHref>Don&apos;t have an account?</Link></em> <br />
                         <button type="submit">Submit</button> <p />
                         <div id="loginError" style={{ color: "red" }}></div>
                     </form>
