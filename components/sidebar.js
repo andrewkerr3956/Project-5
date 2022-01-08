@@ -26,7 +26,7 @@ export default function Sidebar(props) {
 
     return (
         <aside>
-            <ul>
+            <ul style={{listStyleType: 'none'}}>
                 <nav className={styles.navContainer}>
                     <Link href={'/category?id=1'} passHref><button id={1} onClick={changeCategory} className={props.currentCategory == 1 ? styles.active : styles.navItem}><li style={{ marginTop: "10px" }}>{categories[0]}</li></button></Link>
                     <Link href={'/category?id=2'} passHref><button id={2} onClick={changeCategory} className={props.currentCategory == 2 ? styles.active : styles.navItem}><li style={{ marginTop: "10px" }}>{categories[1]}</li></button></Link>

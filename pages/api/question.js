@@ -26,7 +26,7 @@ const handler = async(req, res) => {
                     conn.release();
                 })
             }
-            else if (req.query.qid) {
+            else if (req.query.qid) { 
                 mysql.pool.getConnection((err, conn) => {
                     if (err) throw err;
                     conn.query("SELECT * FROM `vw_QuestionView` WHERE `questionid` = ?", [req.query.qid], async(err, results) => {
@@ -42,7 +42,7 @@ const handler = async(req, res) => {
                 })
             }
             else {
-                // In the future, there may possibly be a system that shows all questions for all categories.
+                res.send({error: "There was an error with your query"});
             }
         }
         else {

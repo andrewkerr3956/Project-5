@@ -2,10 +2,11 @@ import Head from 'next/head'
 import Link from 'next/link'
 import styles from '../styles/Home.module.css'
 import Sidebar from './sidebar'
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 export default function Layout({ children }) {
     // When the page is loaded, determine if their is a user logged in. If not, display the login and register buttons.
+    const [userId, setUserId] = useState(null);
     useEffect(() => {
         const fetchSession = async () => {
             if (sessionStorage.getItem("userid")) {
@@ -14,6 +15,7 @@ export default function Layout({ children }) {
                 document.getElementById("displayUsername").innerText = `Welcome, ${sessionStorage.getItem("username")}!`;
                 document.getElementById("displayPoints").innerText = `${sessionStorage.getItem("points")} points`;
                 document.getElementById("displayLogout").style = "display: block;";
+                setUserId(sessionStorage.getItem("userid"));
             }
         }
         fetchSession();
@@ -28,7 +30,7 @@ export default function Layout({ children }) {
             <header className={styles.headerContainer}>
                 <h1 className={styles.title}>Answers Galore</h1>
                 <div id="titlePositioner" style={{ marginTop: "20px" }}>
-                    <div id="displayUsername"></div><span id="displayPoints"></span><div id="displayLogout" style={{ display: "none" }}><Link href={'/logout'} passHref><button>Logout</button></Link></div>
+                    <Link href={`/profile?id=${userId}`} passHref><div id="displayUsername"></div></Link><span id="displayPoints"></span><div id="displayLogout" style={{ display: "none" }}><Link href={'/logout'} passHref><button>Logout</button></Link></div>
                     <div id="displayButtons">
                         <Link href={'/login'} passHref><button>Login</button></Link>
                         <Link href={'/register'} passHref><button>Register</button></Link>

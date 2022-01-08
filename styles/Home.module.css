@@ -21,6 +21,26 @@
   background-color: black;
 }
 
+@media screen and (max-width: 576px) {
+    .navContainer {
+      flex-flow: row;
+      position: relative;
+      height: 10vh !important;
+      width: 100%;
+    }
+    .navItem {
+      height: 10vh !important;
+      width: 40% !important;
+    }
+    .active {
+      height: 10vh !important;
+      width: 40% !important;
+    }
+    .mainContainer {
+      left: 10% !important;
+    }
+}
+
 .navItem {
   width: 100%;
   height: calc((80vh/5) - 0.03vh);

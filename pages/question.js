@@ -7,6 +7,7 @@ const Question = (props) => {
     const [question, setQuestion] = useState("");
     const [questionDetails, setQuestionDetails] = useState("");
     const [author, setAuthor] = useState("");
+    const [authorId, setAuthorId] = useState(null);
     const [askDate, setAskDate] = useState(undefined);
     const [answerText, setAnswerText] = useState("");
     const [answers, setAnswers] = useState([]);
@@ -34,6 +35,7 @@ const Question = (props) => {
                 setQuestion(data.results[0].question);
                 setQuestionDetails(data.results[0].questiondetails);
                 setAuthor(data.results[0].author);
+                setAuthorId(data.results[0].authorid);
                 setAskDate(data.results[0].askdate);
                 setCorrectAnswer(data.results[0].correctid);
             }
@@ -51,7 +53,7 @@ const Question = (props) => {
                 // Handle Results
                 let tempArray = [];
                 data.results.map((item, idx) => {
-                    return tempArray.push({ answerid: item.answerid, answer: item.answer, author: item.author, answerdate: item.answerdate, editdate: item.editdate });
+                    return tempArray.push({ answerid: item.answerid, answer: item.answer, author: item.author, answerdate: item.answerdate, editdate: item.editdate, authorid: item.authorid });
                 });
                 tempArray.map((item, idx) => {
                     if (item.answerid == correctAnswer) {
@@ -266,8 +268,8 @@ const Question = (props) => {
                 <div>
                     <section name="questionSection">
                         <div style={{ fontSize: '1.2rem' }}><strong>{question}</strong></div>
-                        <div>{questionDetails}</div>
-                        <div>Asked by: <strong>{author}</strong> on <strong>{askDate}</strong></div>
+                        <p>{questionDetails}</p>
+                        <div>Asked by: <strong><Link href={`/profile?id=${authorId}`} passHref>{author}</Link></strong> on <strong>{askDate}</strong></div>
                         {sessionStorage.getItem("username") == author && (
                             <div>
                                 <button onClick={editQuestion}>Edit Question</button>
@@ -295,7 +297,7 @@ const Question = (props) => {
                                                             <div>edited on <strong>{item.editdate}</strong></div>
                                                         )}
                                                         {item.answerdate && (
-                                                            <div>answered by <strong>{item.author}</strong> on <strong>{item.answerdate}</strong></div>
+                                                            <div>answered by <strong><Link href={`/profile?id=${item.authorid}`} passHref>{item.author}</Link></strong> on <strong>{item.answerdate}</strong></div>
                                                         )}
                                                         {/* Show a edit button for the answer if user is logged in as the answer author. */}
                                                         {sessionStorage.getItem("username") == item.author && (
@@ -311,13 +313,13 @@ const Question = (props) => {
                                             }
                                             else {
                                                 return (
-                                                    <li key={item.answerid} style={{ marginTop: '2%', width: '80%', border: '2px solid black', borderRadius: '2px', backgroundColor: 'lightblue' }}>
+                                                    <li key={item.answerid} style={{ marginTop: '2%', width: '80%', border: '2px swolid black', borderRadius: '2px', backgroundColor: 'lightblue' }}>
                                                         <div>{item.answer}</div>
                                                         {/* Show if the answer has been edited. */}
                                                         {item.editdate && (
                                                             <div>edited on <strong>{item.editdate}</strong></div>
                                                         )}
-                                                        <div>answered by <strong>{item.author}</strong> on <strong>{item.answerdate}</strong></div>
+                                                        <div>answered by <strong><Link href={`/profile?id=${item.authorid}`} passHref>{item.author}</Link></strong> on <strong>{item.answerdate}</strong></div><p />
                                                         {/* Show a edit button for the answer if user is logged in as the answer author. */}
                                                         {sessionStorage.getItem("username") == item.author && (
                                                             <button id={item.answerid} onClick={editAnswer}>Edit</button>
@@ -326,8 +328,9 @@ const Question = (props) => {
                                                         {sessionStorage.getItem("username") == item.author && (
                                                             <button id={item.answerid} onClick={deleteAnswer}>Delete</button>
                                                         )}
-                                                        {/* Check if the user logged in as the author of the question, and if there is no correct answer. */}
-                                                        {sessionStorage.getItem("username") == author && correctAnswer == null && (
+                                                        {/* Check if the user logged in as the author of the question, if the answer is from the author, 
+                                                        do not allow them to mark it as correct, and if there is no correct answer. */}
+                                                        {sessionStorage.getItem("username") == author && sessionStorage.getItem("username") != author && correctAnswer == null && (
                                                             <button id={item.answerid} onClick={markCorrect}>Mark Correct</button>
                                                         )}
                                                     </li>
