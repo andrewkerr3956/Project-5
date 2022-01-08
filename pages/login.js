@@ -30,7 +30,7 @@ const CheckLogin = async (user, pass) => {
 export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    useEffect(() => {
+    useEffect(() => { // If user is already logged in, redirect them back to the home page.
         if (sessionStorage.userid) {
             window.location.pathname = '/';
         }

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 const Question = (props) => {
     const [error, setError] = useState(false);
@@ -12,6 +13,9 @@ const Question = (props) => {
     const [correctAnswer, setCorrectAnswer] = useState(null);
     const [editAnswerActive, setEditAnswerActive] = useState(false);
     const [editAnswerText, setEditAnswerText] = useState("");
+    const [editAnswerId, setEditAnswerId] = useState(null);
+    const [editQuestionActive, setEditQuestionActive] = useState(false);
+    const [editQuestionText, setEditQuestionText] = useState("");
 
     useEffect(() => {
         // Fetch the data from the api with the given url
@@ -121,7 +125,8 @@ const Question = (props) => {
             },
             body: JSON.stringify({
                 questionid: questionid,
-                correct: event.target.id
+                correct: event.target.id,
+                userid: sessionStorage.getItem("userid")
             })
         })
         data = await data.json();
@@ -181,18 +186,32 @@ const Question = (props) => {
         // Obtain the query parameters from the url.
         let questionid = new URLSearchParams(window.location.search);
         questionid = questionid.get('qid');
-        let data = await fetch('/api/question', {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                questionid: questionid, question: updateQuestionText
-            })
-        });
+        if(editQuestionText != "" && editQuestionText != null && editQuestionText.length >= 15 && editQuestionText.length <= 200) {
+            let data = await fetch('/api/question', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    questionid: questionid, question: editQuestionText
+                })
+            });
+            data = await data.json();
+            if(data.error) {
+                alert(data.error);
+            }
+            else {
+                alert(data.success);
+                window.location.reload();
+            }
+        }
+        else {
+            alert("The question must be between 15 and 200 characters long.");
+        }
     }
 
     const updateAnswer = async (event) => {
+        console.log("id", event.target.id, ", answer: " + editAnswerText);
         if (editAnswerText != "" && editAnswerText != null && editAnswerText.length >= 15 && editAnswerText.length <= 500) {
             let data = await fetch('/api/answer', {
                 method: 'PUT',
@@ -200,7 +219,7 @@ const Question = (props) => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    answerid: event.target.id, answer: editAnswerText
+                    answerid: editAnswerId, answer: editAnswerText
                 })
             });
             data = await data.json();
@@ -217,13 +236,21 @@ const Question = (props) => {
         }
     }
 
-    const editAnswer = async (answer) => {
-        setEditAnswerText(answer);
+    const editQuestion = async (event) => {
+        setEditQuestionActive(true);
+    }
+
+    const editAnswer = async (event) => {
         setEditAnswerActive(true);
+        setEditAnswerId(event.target.id);
     }
 
     const handleAnswerText = async (event) => {
         setAnswerText(event.target.value);
+    }
+
+    const handleEditQuestionText = async (event) => {
+        setEditQuestionText(event.target.value);
     }
 
     const handleEditAnswerText = async (event) => {
@@ -242,61 +269,49 @@ const Question = (props) => {
                         <div>{questionDetails}</div>
                         <div>Asked by: <strong>{author}</strong> on <strong>{askDate}</strong></div>
                         {sessionStorage.getItem("username") == author && (
-                            <button onClick={deleteQuestion}>Delete Question</button>
+                            <div>
+                                <button onClick={editQuestion}>Edit Question</button>
+                                <button onClick={deleteQuestion}>Delete Question</button>
+                            </div>
                         )}
                     </section> <p />
                     <section name="answerSection">
-                        <div style={{ fontSize: '1.4rem' }}><strong>Answers</strong></div> <p />
-                        <textarea rows={4} cols={24} value={answerText} onChange={handleAnswerText} readOnly={!props.userActive} required /> <br />
-                        {props.userActive && (
-                            <button type="submit" onClick={submitAnswer}>Submit Answer</button>
-                        )} <p />
-                        <ul style={{ display: 'flex', flexFlow: 'row wrap', justifyContent: 'center', listStyleType: 'none' }}>
-                            {answers.length > 0 && answers.map((item, idx) => {
-                                if (item.answerid && item.answer && item.author) { // Check if the answer actually exists.
-                                    if (item.answerid == correctAnswer) { // if the answer is the correct answer
-                                        return (
-                                            <li key={item.answerid} style={{ marginTop: '2%', width: '80%', border: '2px solid black', borderRadius: '2px', backgroundColor: 'lightgreen' }}>
-                                                {editAnswerActive && (
-                                                    <div>
-                                                        <textarea value={editAnswerText} onChange={handleEditAnswerText} /> <p />
-                                                        <button onClick={() => setEditAnswerActive(false)}>Cancel</button>
-                                                        <button id={item.answerid} onClick={updateAnswer}>Submit Changes</button>
-                                                    </div>
-                                                )}
-                                                {!editAnswerActive && (
-                                                    <>
+                        {!editAnswerActive && !editQuestionActive && ( // Only display this if user is not editing an answer or question
+                            <>
+                                <div style={{ fontSize: '1.4rem' }}><strong>Answers</strong></div> <p />
+                                <textarea rows={6} cols={30} value={answerText} onChange={handleAnswerText} readOnly={!props.userActive} required /> <br />
+                                {props.userActive && (
+                                    <button type="submit" onClick={submitAnswer}>Submit Answer</button>
+                                )} <p />
+                                <ul style={{ display: 'flex', flexFlow: 'row wrap', justifyContent: 'center', listStyleType: 'none' }}>
+                                    {answers.length > 0 && answers.map((item, idx) => {
+                                        if (item.answerid && item.answer && item.author) { // Check if the answer actually exists.
+                                            if (item.answerid == correctAnswer) { // if the answer is the correct answer
+                                                return (
+                                                    <li key={item.answerid} style={{ marginTop: '2%', width: '80%', border: '2px solid black', borderRadius: '2px', backgroundColor: 'lightgreen' }}>
                                                         <div><span title={"Marked as correct answer"} style={{ color: 'darkgreen', fontSize: '2rem', fontWeight: '600', float: 'left', marginLeft: '5px' }}>✓</span>{item.answer}</div>
                                                         {/* Show if the answer has been edited. */}
                                                         {item.editdate && (
                                                             <div>edited on <strong>{item.editdate}</strong></div>
                                                         )}
-                                                        <div>answered by <strong>{item.author}</strong> on <strong>{item.answerdate}</strong></div>
+                                                        {item.answerdate && (
+                                                            <div>answered by <strong>{item.author}</strong> on <strong>{item.answerdate}</strong></div>
+                                                        )}
                                                         {/* Show a edit button for the answer if user is logged in as the answer author. */}
                                                         {sessionStorage.getItem("username") == item.author && (
-                                                            <button id={item.answerid} onClick={() => editAnswer(item.answer)}>Edit</button>
+                                                            <button id={item.answerid} onChange={editAnswer}>Edit</button>
                                                         )}
                                                         {/* Show a delete button for the answer if user is logged in as the answer author. */}
                                                         {sessionStorage.getItem("username") == item.author && (
                                                             <button id={item.answerid} onClick={deleteAnswer}>Delete</button>
                                                         )}
-                                                    </>
-                                                )}
-                                            </li>
-                                        )
-                                    }
-                                    else {
-                                        return (
-                                            <li key={item.answerid} style={{ marginTop: '2%', width: '80%', border: '2px solid black', borderRadius: '2px', backgroundColor: 'lightblue' }}>
-                                                {editAnswerActive && (
-                                                    <div>
-                                                        <textarea value={editAnswerText} onChange={handleEditAnswerText} /> <p />
-                                                        <button onClick={() => setEditAnswerActive(false)}>Cancel</button>
-                                                        <button id={item.answerid} onClick={updateAnswer}>Submit Changes</button>
-                                                    </div>
-                                                )}
-                                                {!editAnswerActive && (
-                                                    <>
+                                                    </li>
+                                                )
+
+                                            }
+                                            else {
+                                                return (
+                                                    <li key={item.answerid} style={{ marginTop: '2%', width: '80%', border: '2px solid black', borderRadius: '2px', backgroundColor: 'lightblue' }}>
                                                         <div>{item.answer}</div>
                                                         {/* Show if the answer has been edited. */}
                                                         {item.editdate && (
@@ -305,7 +320,7 @@ const Question = (props) => {
                                                         <div>answered by <strong>{item.author}</strong> on <strong>{item.answerdate}</strong></div>
                                                         {/* Show a edit button for the answer if user is logged in as the answer author. */}
                                                         {sessionStorage.getItem("username") == item.author && (
-                                                            <button id={item.answerid} onClick={() => editAnswer(item.answer)}>Edit</button>
+                                                            <button id={item.answerid} onClick={editAnswer}>Edit</button>
                                                         )}
                                                         {/* Show a delete button for the answer if user is logged in as the answer author. */}
                                                         {sessionStorage.getItem("username") == item.author && (
@@ -315,17 +330,33 @@ const Question = (props) => {
                                                         {sessionStorage.getItem("username") == author && correctAnswer == null && (
                                                             <button id={item.answerid} onClick={markCorrect}>Mark Correct</button>
                                                         )}
-                                                    </>
-                                                )}
-                                            </li>
-                                        )
-                                    }
-                                }
-                                else {
-                                    return <li key={idx}>{item}</li>
-                                }
-                            })}
-                        </ul>
+                                                    </li>
+                                                )
+                                            }
+                                        }
+                                        else {
+                                            return <li key={idx}>{item}</li>
+                                        }
+                                    })}
+                                </ul>
+                            </>
+                        )}
+                        {editQuestionActive && (
+                            <div>
+                                <h2>Editing Question...</h2>
+                                <textarea rows={8} cols={30} value={editQuestionText} onChange={handleEditQuestionText} /> <p />
+                                <button onClick={() => window.location.reload()}>Cancel</button>
+                                <button onClick={updateQuestion}>Update</button>
+                            </div>
+                        )}
+                        {editAnswerActive && (
+                            <div>
+                                <h2>Editing Answer...</h2>
+                                <textarea rows={8} cols={30} value={editAnswerText} onChange={handleEditAnswerText} /> <p />
+                                <button onClick={() => window.location.reload()}>Cancel</button>
+                                <button onClick={updateAnswer}>Update</button>
+                            </div>
+                        )}
                     </section>
                 </div>
             )}

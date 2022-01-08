@@ -7,13 +7,16 @@ import { useEffect } from 'react'
 export default function Layout({ children }) {
     // When the page is loaded, determine if their is a user logged in. If not, display the login and register buttons.
     useEffect(() => {
-        if (sessionStorage.getItem("userid")) {
-            document.getElementById("displayButtons").style = "display: none;";
-            document.getElementById("titlePositioner").style = "margin-top: -20px;";
-            document.getElementById("displayUsername").innerText = `Welcome, ${sessionStorage.getItem("username")}!`;
-            document.getElementById("displayPoints").innerText = `${sessionStorage.getItem("points")} points`;
-            document.getElementById("displayLogout").style = "display: block;";
+        const fetchSession = async () => {
+            if (sessionStorage.getItem("userid")) {
+                document.getElementById("displayButtons").style = "display: none;";
+                document.getElementById("titlePositioner").style = "margin-top: -20px;";
+                document.getElementById("displayUsername").innerText = `Welcome, ${sessionStorage.getItem("username")}!`;
+                document.getElementById("displayPoints").innerText = `${sessionStorage.getItem("points")} points`;
+                document.getElementById("displayLogout").style = "display: block;";
+            }
         }
+        fetchSession();
     }, []);
     return (
         <div>

@@ -73,7 +73,19 @@ const handler = async(req, res) => {
     else if(req.method == 'PUT') {
         // Handle updating a question here.
         if(req.body.question) {
-            res.send({updateSuccess: "Question updated successfully!"})
+            mysql.pool.getConnection((err, conn) => {
+                if (err) throw err;
+                conn.query("UPDATE `questions` SET `question` = ? WHERE `questionid` = ?", [req.body.question, req.body.questionid], async(err, results) => {
+                    if (err) throw err;
+                    if (results.changedRows > 0) {
+                        res.send({success: "Question updated successfully!"});
+                    }
+                    else {
+                        res.send({error: "There was an error"});
+                    }
+                });
+                conn.release();
+            });
         }
         else if(req.body.correct) {
             // Handle updating the correct answer to a question.
@@ -84,6 +96,10 @@ const handler = async(req, res) => {
                     console.log(results);
                     if(results.changedRows > 0) {
                         res.send({ success: "Correct answer updated!" });
+                        conn.query("UPDATE `users` SET `points` = `points` + 5 WHERE `userid` = ?", [req.body.userid], async(err, results) => {
+                            if (err) throw err;
+                            console.log(results);
+                        });
                     }
                     else {
                         res.send({ error: "There was an error." });
