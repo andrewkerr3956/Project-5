@@ -23,7 +23,7 @@ const handler = async(req, res) => {
                             res.send({noResults});
                         }
                     });
-                    conn.release();
+                    mysql.pool.releaseConnection(conn);
                 })
             }
             else if (req.query.qid) { 
@@ -38,7 +38,7 @@ const handler = async(req, res) => {
                             res.send({error});
                         }
                     });
-                    conn.release();
+                    mysql.pool.releaseConnection(conn);
                 })
             }
             else {
@@ -63,7 +63,7 @@ const handler = async(req, res) => {
                         res.send({success});
                     }
                 });
-                conn.release();
+                mysql.pool.releaseConnection(conn);
             });
         }
         else {
@@ -84,7 +84,7 @@ const handler = async(req, res) => {
                         res.send({error: "There was an error"});
                     }
                 });
-                conn.release();
+                mysql.pool.releaseConnection(conn);
             });
         }
         else if(req.body.correct) {
@@ -104,7 +104,7 @@ const handler = async(req, res) => {
                     else {
                         res.send({ error: "There was an error." });
                     }
-                    conn.release();
+                    mysql.pool.releaseConnection(conn);
                 })
             })
         }
@@ -125,7 +125,7 @@ const handler = async(req, res) => {
                     res.send({ error: "There was an error." });
                 }
             });
-            conn.release();
+            mysql.pool.releaseConnection(conn);
         });
     }
     else {

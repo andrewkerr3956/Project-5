@@ -14,7 +14,7 @@ const handler = async(req, res) => {
                         res.send({error: "There was an error"});
                     }
                 });
-                conn.release();
+                mysql.pool.releaseConnection(conn);
             });
         }
         else if (req.query.qid) { // Qid means Questions @ the user id specified
