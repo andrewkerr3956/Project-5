@@ -28,11 +28,11 @@ export default function Sidebar(props) {
         <aside>
             <ul style={{listStyleType: 'none'}}>
                 <nav className={styles.navContainer}>
-                    <Link href={'/category?id=1'} passHref><button id={1} onClick={changeCategory} className={props.currentCategory == 1 ? styles.active : styles.navItem}><li style={{ marginTop: "10px" }}>{categories[0]}</li></button></Link>
-                    <Link href={'/category?id=2'} passHref><button id={2} onClick={changeCategory} className={props.currentCategory == 2 ? styles.active : styles.navItem}><li style={{ marginTop: "10px" }}>{categories[1]}</li></button></Link>
-                    <Link href={'/category?id=3'} passHref><button id={3} onClick={changeCategory} className={props.currentCategory == 3 ? styles.active : styles.navItem}><li style={{ marginTop: "10px" }}>{categories[2]}</li></button></Link>
-                    <Link href={'/category?id=4'} passHref><button id={4} onClick={changeCategory} className={props.currentCategory == 4 ? styles.active : styles.navItem}><li style={{ marginTop: "10px" }}>{categories[3]}</li></button></Link>
-                    <Link href={'/category?id=5'} passHref><button id={5} onClick={changeCategory} className={props.currentCategory == 5 ? styles.active : styles.navItem}><li style={{ marginTop: "10px" }}>{categories[4]}</li></button></Link>
+                    <Link href={'/category?id=1'} passHref><button id={1} onClick={changeCategory} className={props.currentCategory == 1 ? styles.active : styles.navItem}><li id={1} onClick={changeCategory} style={{ marginTop: "10px" }}>{categories[0]}</li></button></Link>
+                    <Link href={'/category?id=2'} passHref><button id={2} onClick={changeCategory} className={props.currentCategory == 2 ? styles.active : styles.navItem}><li id={2} onClick={changeCategory} style={{ marginTop: "10px" }}>{categories[1]}</li></button></Link>
+                    <Link href={'/category?id=3'} passHref><button id={3} onClick={changeCategory} className={props.currentCategory == 3 ? styles.active : styles.navItem}><li id={3} onClick={changeCategory} style={{ marginTop: "10px" }}>{categories[2]}</li></button></Link>
+                    <Link href={'/category?id=4'} passHref><button id={4} onClick={changeCategory} className={props.currentCategory == 4 ? styles.active : styles.navItem}><li id={4} onClick={changeCategory} style={{ marginTop: "10px" }}>{categories[3]}</li></button></Link>
+                    <Link href={'/category?id=5'} passHref><button id={5} onClick={changeCategory} className={props.currentCategory == 5 ? styles.active : styles.navItem}><li id={5} onClick={changeCategory} style={{ marginTop: "10px" }}>{categories[4]}</li></button></Link>
                 </nav>
             </ul>
         </aside>

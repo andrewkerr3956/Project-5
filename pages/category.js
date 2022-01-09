@@ -37,7 +37,7 @@ export default function Category(props) {
             // Handle if there are results
             let tempArray = [];
             data.results.map((item) => {
-                return tempArray.push({ questionid: item.questionid, question: item.question, author: item.author, askdate: item.askdate, authorid: item.authorid });
+                return tempArray.push({ questionid: item.questionid, question: item.question, author: item.author, askdate: item.askdate, authorid: item.authorid, correct: item.correct });
             })
             tempArray.reverse()
             setQuestionsList(tempArray);
@@ -60,7 +60,7 @@ export default function Category(props) {
 
     const submitQuestion = async () => {
         // Handles submitting a question.
-        if (questionText.length >= 15 && questionText.length <= 200 && detailsText.length <= 500) { 
+        if (questionText.length >= 15 && questionText.length <= 200 && detailsText.length <= 500) {
             /* Only add the question to the database if it's at least 15 characters long. The other 2 conditions are to make sure it doesn't exceed
             the database's set maximum lengths. */
             let data = await fetch(`/api/question`, {
@@ -107,7 +107,24 @@ export default function Category(props) {
                     {questionsList.length > 0 && questionsList.map((item, idx) => {
                         if (item.questionid && item.question && item.author) {
                             // Check if we actually have questions in the array.
-                            return <li key={idx} style={{color: 'blue'}}><Link href={`/question?qid=${item.questionid}`} passHref>{item.question}</Link><div style={{color: 'black'}}>asked by <strong><Link href={`/profile?id=${item.authorid}`} passHref>{item.author}</Link></strong> on <strong>{item.askdate}</strong></div></li>
+                            if (item.correct != null) {
+                                return (
+                                    <div>
+                                        <li key={idx} style={{ color: 'blue' }}>
+                                        <span title={"This question has been answered"} style={{ color: 'darkgreen', fontSize: '2rem', fontWeight: '600'}}>✓</span>
+                                            <Link href={`/question?qid=${item.questionid}`} passHref>{item.question}</Link>
+                                            <div style={{ color: 'black' }}>asked by <strong> <Link href={`/profile?id=${item.authorid}`} passHref>{item.author}</Link></strong> on <strong>{item.askdate}</strong></div></li>
+                                    </div>
+                                )
+                            }
+                            else {
+                                return (
+                                    <li key={idx} style={{ color: 'blue' }}>
+                                        <Link href={`/question?qid=${item.questionid}`} passHref>{item.question}</Link>
+                                        <div style={{ color: 'black' }}>asked by <strong><Link href={`/profile?id=${item.authorid}`} passHref>{item.author}</Link></strong> on <strong>{item.askdate}</strong></div>
+                                    </li>
+                                )
+                            }
                         }
                         else {
                             // No results from the database

@@ -2,21 +2,22 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 const Question = (props) => {
-    const [error, setError] = useState(false);
-    const [success, setSuccess] = useState(false);
-    const [question, setQuestion] = useState("");
-    const [questionDetails, setQuestionDetails] = useState("");
-    const [author, setAuthor] = useState("");
-    const [authorId, setAuthorId] = useState(null);
-    const [askDate, setAskDate] = useState(undefined);
-    const [answerText, setAnswerText] = useState("");
-    const [answers, setAnswers] = useState([]);
-    const [correctAnswer, setCorrectAnswer] = useState(null);
-    const [editAnswerActive, setEditAnswerActive] = useState(false);
-    const [editAnswerText, setEditAnswerText] = useState("");
-    const [editAnswerId, setEditAnswerId] = useState(null);
-    const [editQuestionActive, setEditQuestionActive] = useState(false);
-    const [editQuestionText, setEditQuestionText] = useState("");
+    const [error, setError] = useState(false); // If true, the whole page just outputs that there is an error.
+    const [success, setSuccess] = useState(false); // If true, the whole page will display as normal. 
+    const [question, setQuestion] = useState(""); // The question
+    const [questionDetails, setQuestionDetails] = useState(""); // Any additional details about the question.
+    const [author, setAuthor] = useState(""); // The creator of the question
+    const [authorId, setAuthorId] = useState(null); // The id of the author (needed for api usage)
+    const [askDate, setAskDate] = useState(undefined); // The date and time when the question was asked.
+    const [editDate, setEditDate] = useState(undefined); // The date and time when the question was edited.
+    const [answerText, setAnswerText] = useState(""); // The answer
+    const [answers, setAnswers] = useState([]); // Used for mapping all the answers received for the question from the database.
+    const [correctAnswer, setCorrectAnswer] = useState(null); // If there is a correct answer
+    const [editAnswerActive, setEditAnswerActive] = useState(false); // Used to toggle the edit answer display.
+    const [editAnswerText, setEditAnswerText] = useState(""); // The new value of the answer the user is editing.
+    const [editAnswerId, setEditAnswerId] = useState(null); // Used to make sure that the edited answer updates only at the id set here.
+    const [editQuestionActive, setEditQuestionActive] = useState(false); // If the creator of the question is editing the question, this toggles the edit question display.
+    const [editQuestionText, setEditQuestionText] = useState(""); // The new value of the question the creator is editing.
 
     useEffect(() => {
         // Fetch the data from the api with the given url
@@ -37,7 +38,8 @@ const Question = (props) => {
                 setAuthor(data.results[0].author);
                 setAuthorId(data.results[0].authorid);
                 setAskDate(data.results[0].askdate);
-                setCorrectAnswer(data.results[0].correctid);
+                setEditDate(data.results[0].editdate);
+                setCorrectAnswer(data.results[0].correct);
             }
         }
         fetchQuestionData();
@@ -128,7 +130,7 @@ const Question = (props) => {
             body: JSON.stringify({
                 questionid: questionid,
                 correct: event.target.id,
-                userid: sessionStorage.getItem("userid")
+                userid: event.target.getAttribute('name')
             })
         })
         data = await data.json();
@@ -269,8 +271,11 @@ const Question = (props) => {
                     <section name="questionSection">
                         <div style={{ fontSize: '1.2rem' }}><strong>{question}</strong></div>
                         <p>{questionDetails}</p>
+                        {editDate != undefined && (
+                            <div>Edited on: <strong>{editDate}</strong></div>   
+                        )}
                         <div>Asked by: <strong><Link href={`/profile?id=${authorId}`} passHref>{author}</Link></strong> on <strong>{askDate}</strong></div>
-                        {sessionStorage.getItem("username") == author && (
+                        {sessionStorage.getItem("username") == author && ( // Only display if the logged in user is the creator of the question.
                             <div>
                                 <button onClick={editQuestion}>Edit Question</button>
                                 <button onClick={deleteQuestion}>Delete Question</button>
@@ -313,7 +318,7 @@ const Question = (props) => {
                                             }
                                             else {
                                                 return (
-                                                    <li key={item.answerid} style={{ marginTop: '2%', width: '80%', border: '2px swolid black', borderRadius: '2px', backgroundColor: 'lightblue' }}>
+                                                    <li key={item.answerid} style={{ marginTop: '2%', width: '80%', border: '2px solid black', borderRadius: '2px', backgroundColor: 'lightblue' }}>
                                                         <div>{item.answer}</div>
                                                         {/* Show if the answer has been edited. */}
                                                         {item.editdate && (
@@ -330,8 +335,8 @@ const Question = (props) => {
                                                         )}
                                                         {/* Check if the user logged in as the author of the question, if the answer is from the author, 
                                                         do not allow them to mark it as correct, and if there is no correct answer. */}
-                                                        {sessionStorage.getItem("username") == author && sessionStorage.getItem("username") != author && correctAnswer == null && (
-                                                            <button id={item.answerid} onClick={markCorrect}>Mark Correct</button>
+                                                        {sessionStorage.getItem("username") == author && sessionStorage.getItem("username") != item.author && correctAnswer == null && (
+                                                            <button id={item.answerid} name={item.authorid} onClick={markCorrect}>Mark Correct</button>
                                                         )}
                                                     </li>
                                                 )

@@ -12,7 +12,7 @@ export default function Layout({ children }) {
             if (sessionStorage.getItem("userid")) {
                 document.getElementById("displayButtons").style = "display: none;";
                 document.getElementById("titlePositioner").style = "margin-top: -20px;";
-                document.getElementById("displayUsername").innerText = `Welcome, ${sessionStorage.getItem("username")}!`;
+                document.getElementById("displayUsername").innerHTML = `Welcome, <strong>${sessionStorage.getItem("username")}</strong>`;
                 document.getElementById("displayPoints").innerText = `${sessionStorage.getItem("points")} points`;
                 document.getElementById("displayLogout").style = "display: block;";
                 setUserId(sessionStorage.getItem("userid"));
@@ -30,7 +30,10 @@ export default function Layout({ children }) {
             <header className={styles.headerContainer}>
                 <h1 className={styles.title}>Answers Galore</h1>
                 <div id="titlePositioner" style={{ marginTop: "20px" }}>
-                    <Link href={`/profile?id=${userId}`} passHref><div id="displayUsername"></div></Link><span id="displayPoints"></span><div id="displayLogout" style={{ display: "none" }}><Link href={'/logout'} passHref><button>Logout</button></Link></div>
+                    <Link href={`/profile?id=${userId}`} passHref><div id="displayUsername"></div></Link>
+                    <span id="displayPoints"></span>
+                    <div id="displayLogout" style={{ display: "none" }}>
+                        <Link href={'/logout'} passHref><button>Logout</button></Link></div>
                     <div id="displayButtons">
                         <Link href={'/login'} passHref><button>Login</button></Link>
                         <Link href={'/register'} passHref><button>Register</button></Link>

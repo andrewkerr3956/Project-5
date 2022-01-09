@@ -75,7 +75,7 @@ const handler = async(req, res) => {
         if(req.body.question) {
             mysql.pool.getConnection((err, conn) => {
                 if (err) throw err;
-                conn.query("UPDATE `questions` SET `question` = ? WHERE `questionid` = ?", [req.body.question, req.body.questionid], async(err, results) => {
+                conn.query("UPDATE `questions` SET `question` = ?, editdate = CURRENT_TIMESTAMP() WHERE `questionid` = ?", [req.body.question, req.body.questionid], async(err, results) => {
                     if (err) throw err;
                     if (results.changedRows > 0) {
                         res.send({success: "Question updated successfully!"});
