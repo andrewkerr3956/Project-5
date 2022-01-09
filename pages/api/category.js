@@ -1,5 +1,5 @@
 // This route will handle multiple HTTP methods
-let mysql = require('../../lib/db.js');
+const mysql = require('./../../lib/db');
 
 const handler = async (req, res) => {
     if (req.method == "GET") {

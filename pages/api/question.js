@@ -1,5 +1,5 @@
 // This route will deal with retrieving the questions from the database.
-let mysql = require('../../lib/db');
+const mysql = require('./../../lib/db');
 
 const handler = async(req, res) => {
     const error = "ERROR: There was an error.";

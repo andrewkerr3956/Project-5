@@ -1,5 +1,5 @@
-let bcrypt = require('bcrypt');
-let mysql = require('../../lib/db.js');
+const bcrypt = require('bcrypt');
+const mysql = require('./../../lib/db');
 
 const handler = async (req, res) => {
     const error = "There was an error."

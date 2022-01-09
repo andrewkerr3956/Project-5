@@ -1,4 +1,4 @@
-const mysql = require('../../lib/db');
+const mysql = require('./../../lib/db');
 
 const handler = async(req, res) => {
     if(req.method == 'GET') {

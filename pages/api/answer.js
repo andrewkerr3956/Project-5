@@ -1,5 +1,5 @@
 // This route will deal with answers to questions
-let mysql = require('../../lib/db');
+const mysql = require('./../../lib/db');
 
 const handler = async (req, res) => {
     if (req.method == 'GET') {

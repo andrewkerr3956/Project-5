@@ -1,5 +1,5 @@
-let mysql = require('../../lib/db.js');
-let bcrypt = require('bcrypt');
+const mysql = require('./../../lib/db');
+const bcrypt = require('bcrypt');
 
 const handler = async (req, res) => {
     const success = "Registration successful!";
