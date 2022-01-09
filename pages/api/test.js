@@ -4,5 +4,5 @@ export default function handler(req, res) {
         if(err) throw err;
         testthis = conn;
     })
-    res.send({host: process.env.MYSQL_HOST, sql: })    
+    res.send({host: process.env.MYSQL_HOST, sql: testthis})    
 }
