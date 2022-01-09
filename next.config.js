@@ -1,9 +1,3 @@
-import host from './confidential';
-import database from './confidential';
-import port from './confidential';
-import username from './confidential';
-import password from './confidential';
-
 module.exports = {
   env: {
     MYSQL_HOST: process.env.MYSQL_HOST,
