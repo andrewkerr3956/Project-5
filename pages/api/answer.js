@@ -17,7 +17,7 @@ const handler = async (req, res) => {
                             res.send({ noResults: "There were no results" });
                         }
                     }); 
-                    conn.destroy();
+                    conn.release();
                 });
             }
             else {
@@ -42,7 +42,7 @@ const handler = async (req, res) => {
                         res.send({ error: "There was an error." })
                     }
                 });
-                conn.destroy();
+                conn.release();
             });
         }
         else {
@@ -61,7 +61,7 @@ const handler = async (req, res) => {
                     res.send({ error: "There was an error." });
                 }
             });
-            conn.destroy();
+            conn.release();
         });
     }
     else if (req.method == 'DELETE') {
@@ -76,7 +76,7 @@ const handler = async (req, res) => {
                     res.send({ error: "There was an error."} );
                 }
             });
-            conn.destroy();
+            conn.release();
         });
     }
     else {

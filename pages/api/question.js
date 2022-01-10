@@ -23,7 +23,7 @@ const handler = async(req, res) => {
                             res.send({noResults});
                         }
                     });
-                    conn.destroy();
+                    conn.release();
                 })
             }
             else if (req.query.qid) { 
@@ -38,7 +38,7 @@ const handler = async(req, res) => {
                             res.send({error});
                         }
                     });
-                    conn.destroy();
+                    conn.release();
                 })
             }
             else {
@@ -63,7 +63,7 @@ const handler = async(req, res) => {
                         res.send({success});
                     }
                 });
-                conn.destroy();
+                conn.release();
             });
         }
         else {
@@ -84,7 +84,7 @@ const handler = async(req, res) => {
                         res.send({error: "There was an error"});
                     }
                 });
-                conn.destroy();
+                conn.release();
             });
         }
         else if(req.body.correct) {
@@ -104,7 +104,7 @@ const handler = async(req, res) => {
                     else {
                         res.send({ error: "There was an error." });
                     }
-                    conn.destroy();
+                    conn.release();
                 })
             })
         }
@@ -125,7 +125,7 @@ const handler = async(req, res) => {
                     res.send({ error: "There was an error." });
                 }
             });
-            conn.destroy();
+            conn.release();
         });
     }
     else {
