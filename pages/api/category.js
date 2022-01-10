@@ -16,7 +16,7 @@ const handler = async (req, res) => {
                         }
                     });
                 }
-                mysql.pool.releaseConnection(conn);
+                conn.destroy();
             });
         }
         else {
@@ -32,7 +32,7 @@ const handler = async (req, res) => {
                         }
                     });
                 }
-                mysql.pool.releaseConnection(conn);
+                conn.destroy();
             });
         }
     }
