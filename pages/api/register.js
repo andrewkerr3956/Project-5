@@ -25,7 +25,7 @@ const handler = async (req, res) => {
                         }
                     });
                 }
-                conn.release();
+                conn.destroy();
             });
 
         });
