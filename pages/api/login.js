@@ -24,7 +24,7 @@ const handler = async (req, res) => {
                     console.log({error});
                     res.send({error});
                 }
-                mysql.pool.releaseConnection(conn);
+                conn.release();
             })
         })
     }

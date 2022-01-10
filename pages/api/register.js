@@ -25,13 +25,10 @@ const handler = async (req, res) => {
                         }
                     });
                 }
-                mysql.pool.releaseConnection(conn);
+                conn.release();
             });
 
         });
-    }
-    else if (req.method == 'PUT') { // This method will update the user in the database.
-        console.log("This method will be working soon!");
     }
     else {
         console.log(methodError);
