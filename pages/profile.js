@@ -55,7 +55,7 @@ const Profile = (props) => {
                         <ul style={{listStyleType: 'none'}}>
                         {profileQuestions.map((item) => {
                             if (item.question) { // Check if there are any actual questions in the questions list
-                                return <li key={item.questionid} style={{color: 'blue'}}><Link href={`/question?qid=${item.questionid}`} passHref>{item.question}</Link><div style={{color: 'black'}}>asked <strong>{item.askdate}</strong></div></li>
+                                return <li key={item.questionid} style={{color: 'blue', marginTop: '10px'}}><Link href={`/question?qid=${item.questionid}`} passHref>{item.question}</Link><div style={{color: 'black'}}>asked <strong>{item.askdate}</strong></div></li>
                             }
                             else {
                                 return <li>This user has not asked any questions.</li>
