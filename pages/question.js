@@ -306,7 +306,7 @@ const Question = (props) => {
                                                         )}
                                                         {/* Show a edit button for the answer if user is logged in as the answer author. */}
                                                         {sessionStorage.getItem("username") == item.author && (
-                                                            <button id={item.answerid} style={{backgroundColor: 'lightgray'}} onChange={editAnswer}>Edit</button>
+                                                            <button id={item.answerid} style={{backgroundColor: 'lightgray'}} onClick={editAnswer}>Edit</button>
                                                         )}
                                                         {/* Show a delete button for the answer if user is logged in as the answer author. */}
                                                         {sessionStorage.getItem("username") == item.author && (
