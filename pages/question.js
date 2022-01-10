@@ -327,7 +327,7 @@ const Question = (props) => {
                                                         <div>answered by <strong><Link href={`/profile?id=${item.authorid}`} passHref>{item.author}</Link></strong> on <strong>{item.answerdate}</strong></div><p />
                                                         {/* Show a edit button for the answer if user is logged in as the answer author. */}
                                                         {sessionStorage.getItem("username") == item.author && (
-                                                            <button id={item.answerid} style={{backgroundColor: 'lightblue'}} onClick={editAnswer}>Edit</button>
+                                                            <button id={item.answerid} style={{backgroundColor: 'lightgray'}} onClick={editAnswer}>Edit</button>
                                                         )}
                                                         {/* Show a delete button for the answer if user is logged in as the answer author. */}
                                                         {sessionStorage.getItem("username") == item.author && (
