@@ -31,15 +31,7 @@ const handler = async(req, res) => {
                     else {
                         res.send({listError: "There was an error."});
                     }
-<<<<<<< HEAD
                     conn.destroy();
-=======
-<<<<<<< HEAD
-                    conn.release();
-=======
-                    conn.destroy();
->>>>>>> 1db1e91e335f009e5cc2fddee18579284855df1b
->>>>>>> fa09ab005953f9db4f36a28ad949627cdfd0c8a2
                 })
             });
         }
