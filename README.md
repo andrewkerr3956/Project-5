@@ -14,6 +14,6 @@ Functionality: <br />
 [Questions]: Click a category to view the questions associated with that category. You can only view questions and answers while logged out. If you are logged in, you can post a question in the category of your choice, answer a question, and be awarded points for answering correctly! You can also always delete or edit your question or answer if needed. <p/>
 
 
-Technologies Used: HTML, CSS, JavaScript, React, Node.js, Next.js (create-next-app), MySQL, Heroku
+Technologies Used: HTML, CSS, JavaScript, React, Node.js, Next.js (create-next-app), MySQL, Heroku, etc.
 
 Future Improvements: Add a points shop, award some badges for good deeds being done in the community, allow select users to add categories, always can use more touch-ups to the design, etc.
