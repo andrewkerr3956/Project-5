@@ -50,7 +50,7 @@ export default function Login() {
                             <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} required maxLength={200} />
                         </label> <p />
                         <em><Link href={'/register'} passHref>Don&apos;t have an account?</Link></em> <br />
-                        <button type="submit">Submit</button> <p />
+                        <button type="submit" style={{backgroundColor: 'green'}}>Submit</button> <p />
                         <div id="loginError" style={{ color: "red" }}></div>
                     </form>
                 </div>

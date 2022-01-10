@@ -33,10 +33,10 @@ export default function Layout({ children }) {
                     <Link href={`/profile?id=${userId}`} passHref><div id="displayUsername"></div></Link>
                     <span id="displayPoints"></span>
                     <div id="displayLogout" style={{ display: "none" }}>
-                        <Link href={'/logout'} passHref><button>Logout</button></Link></div>
+                        <Link href={'/logout'} passHref><button style={{backgroundColor: 'palevioletred'}}>Logout</button></Link></div>
                     <div id="displayButtons">
-                        <Link href={'/login'} passHref><button>Login</button></Link>
-                        <Link href={'/register'} passHref><button>Register</button></Link>
+                        <Link href={'/login'} passHref><button style={{backgroundColor: 'lightblue'}}>Login</button></Link>
+                        <Link href={'/register'} passHref><button style={{backgroundColor: 'lightgreen'}}>Register</button></Link>
                     </div>
                 </div>
             </header>

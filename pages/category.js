@@ -98,7 +98,7 @@ export default function Category(props) {
                     <textarea value={detailsText} onChange={handleDetailsText} rows={4} cols={24} maxLength={200} readOnly={!props.userActive} />
                 </label> <p />
                 {props.userActive && (
-                    <button type="submit" onClick={submitQuestion}>Submit</button>
+                    <button type="submit" style={{backgroundColor: 'green'}} onClick={submitQuestion}>Submit</button>
                 )}
             </section>
             <section style={{ marginTop: "40px" }} name={"previousQuestions"}>

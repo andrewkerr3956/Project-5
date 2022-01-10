@@ -277,8 +277,8 @@ const Question = (props) => {
                         <div>Asked by: <strong><Link href={`/profile?id=${authorId}`} passHref>{author}</Link></strong> on <strong>{askDate}</strong></div>
                         {sessionStorage.getItem("username") == author && ( // Only display if the logged in user is the creator of the question.
                             <div>
-                                <button onClick={editQuestion}>Edit Question</button>
-                                <button onClick={deleteQuestion}>Delete Question</button>
+                                <button style={{backgroundColor: 'lightgray'}} onClick={editQuestion}>Edit Question</button>
+                                <button style={{backgroundColor: 'red'}} onClick={deleteQuestion}>Delete Question</button>
                             </div>
                         )}
                     </section> <p />
@@ -288,7 +288,7 @@ const Question = (props) => {
                                 <div style={{ fontSize: '1.4rem' }}><strong>Answers</strong></div> <p />
                                 <textarea rows={6} cols={30} value={answerText} onChange={handleAnswerText} readOnly={!props.userActive} required /> <br />
                                 {props.userActive && (
-                                    <button type="submit" onClick={submitAnswer}>Submit Answer</button>
+                                    <button type="submit" style={{backgroundColor: 'lightgreen'}} onClick={submitAnswer}>Submit Answer</button>
                                 )} <p />
                                 <ul style={{ display: 'flex', flexFlow: 'row wrap', justifyContent: 'center', listStyleType: 'none' }}>
                                     {answers.length > 0 && answers.map((item, idx) => {
@@ -306,11 +306,11 @@ const Question = (props) => {
                                                         )}
                                                         {/* Show a edit button for the answer if user is logged in as the answer author. */}
                                                         {sessionStorage.getItem("username") == item.author && (
-                                                            <button id={item.answerid} onChange={editAnswer}>Edit</button>
+                                                            <button id={item.answerid} style={{backgroundColor: 'lightgray'}} onChange={editAnswer}>Edit</button>
                                                         )}
                                                         {/* Show a delete button for the answer if user is logged in as the answer author. */}
                                                         {sessionStorage.getItem("username") == item.author && (
-                                                            <button id={item.answerid} onClick={deleteAnswer}>Delete</button>
+                                                            <button id={item.answerid} style={{backgroundColor: 'red'}} onClick={deleteAnswer}>Delete</button>
                                                         )}
                                                     </li>
                                                 )
@@ -327,16 +327,16 @@ const Question = (props) => {
                                                         <div>answered by <strong><Link href={`/profile?id=${item.authorid}`} passHref>{item.author}</Link></strong> on <strong>{item.answerdate}</strong></div><p />
                                                         {/* Show a edit button for the answer if user is logged in as the answer author. */}
                                                         {sessionStorage.getItem("username") == item.author && (
-                                                            <button id={item.answerid} onClick={editAnswer}>Edit</button>
+                                                            <button id={item.answerid} style={{backgroundColor: 'lightblue'}} onClick={editAnswer}>Edit</button>
                                                         )}
                                                         {/* Show a delete button for the answer if user is logged in as the answer author. */}
                                                         {sessionStorage.getItem("username") == item.author && (
-                                                            <button id={item.answerid} onClick={deleteAnswer}>Delete</button>
+                                                            <button id={item.answerid} style={{backgroundColor: 'red'}} onClick={deleteAnswer}>Delete</button>
                                                         )}
                                                         {/* Check if the user logged in as the author of the question, if the answer is from the author, 
                                                         do not allow them to mark it as correct, and if there is no correct answer. */}
                                                         {sessionStorage.getItem("username") == author && sessionStorage.getItem("username") != item.author && correctAnswer == null && (
-                                                            <button id={item.answerid} name={item.authorid} onClick={markCorrect}>Mark Correct</button>
+                                                            <button id={item.answerid} name={item.authorid} style={{backgroundColor: 'green'}} onClick={markCorrect}>Mark Correct</button>
                                                         )}
                                                     </li>
                                                 )
