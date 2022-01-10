@@ -24,7 +24,11 @@ const handler = async (req, res) => {
                     console.log({error});
                     res.send({error});
                 }
+<<<<<<< HEAD
                 conn.release();
+=======
+                conn.destroy();
+>>>>>>> 1db1e91e335f009e5cc2fddee18579284855df1b
             })
         })
     }

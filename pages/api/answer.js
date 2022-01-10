@@ -17,7 +17,11 @@ const handler = async (req, res) => {
                             res.send({ noResults: "There were no results" });
                         }
                     }); 
+<<<<<<< HEAD
                     conn.release();
+=======
+                    conn.destroy();
+>>>>>>> 1db1e91e335f009e5cc2fddee18579284855df1b
                 });
             }
             else {
@@ -42,7 +46,11 @@ const handler = async (req, res) => {
                         res.send({ error: "There was an error." })
                     }
                 });
+<<<<<<< HEAD
                 conn.release();
+=======
+                conn.destroy();
+>>>>>>> 1db1e91e335f009e5cc2fddee18579284855df1b
             });
         }
         else {
@@ -61,7 +69,11 @@ const handler = async (req, res) => {
                     res.send({ error: "There was an error." });
                 }
             });
+<<<<<<< HEAD
             conn.release();
+=======
+            conn.destroy();
+>>>>>>> 1db1e91e335f009e5cc2fddee18579284855df1b
         });
     }
     else if (req.method == 'DELETE') {
@@ -76,7 +88,11 @@ const handler = async (req, res) => {
                     res.send({ error: "There was an error."} );
                 }
             });
+<<<<<<< HEAD
             conn.release();
+=======
+            conn.destroy();
+>>>>>>> 1db1e91e335f009e5cc2fddee18579284855df1b
         });
     }
     else {

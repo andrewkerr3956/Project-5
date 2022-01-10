@@ -23,7 +23,11 @@ const handler = async(req, res) => {
                             res.send({noResults});
                         }
                     });
+<<<<<<< HEAD
                     conn.release();
+=======
+                    conn.destroy();
+>>>>>>> 1db1e91e335f009e5cc2fddee18579284855df1b
                 })
             }
             else if (req.query.qid) { 
@@ -38,7 +42,11 @@ const handler = async(req, res) => {
                             res.send({error});
                         }
                     });
+<<<<<<< HEAD
                     conn.release();
+=======
+                    conn.destroy();
+>>>>>>> 1db1e91e335f009e5cc2fddee18579284855df1b
                 })
             }
             else {
@@ -63,7 +71,11 @@ const handler = async(req, res) => {
                         res.send({success});
                     }
                 });
+<<<<<<< HEAD
                 conn.release();
+=======
+                conn.destroy();
+>>>>>>> 1db1e91e335f009e5cc2fddee18579284855df1b
             });
         }
         else {
@@ -84,7 +96,11 @@ const handler = async(req, res) => {
                         res.send({error: "There was an error"});
                     }
                 });
+<<<<<<< HEAD
                 conn.release();
+=======
+                conn.destroy();
+>>>>>>> 1db1e91e335f009e5cc2fddee18579284855df1b
             });
         }
         else if(req.body.correct) {
@@ -104,7 +120,11 @@ const handler = async(req, res) => {
                     else {
                         res.send({ error: "There was an error." });
                     }
+<<<<<<< HEAD
                     conn.release();
+=======
+                    conn.destroy();
+>>>>>>> 1db1e91e335f009e5cc2fddee18579284855df1b
                 })
             })
         }
@@ -125,7 +145,11 @@ const handler = async(req, res) => {
                     res.send({ error: "There was an error." });
                 }
             });
+<<<<<<< HEAD
             conn.release();
+=======
+            conn.destroy();
+>>>>>>> 1db1e91e335f009e5cc2fddee18579284855df1b
         });
     }
     else {

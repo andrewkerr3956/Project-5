@@ -14,7 +14,11 @@ const handler = async(req, res) => {
                         res.send({error: "There was an error"});
                     }
                 });
+<<<<<<< HEAD
                 conn.release();
+=======
+                conn.destroy();
+>>>>>>> 1db1e91e335f009e5cc2fddee18579284855df1b
             });
         }
         else if (req.query.qid) { // Qid means Questions @ the user id specified
@@ -31,7 +35,11 @@ const handler = async(req, res) => {
                     else {
                         res.send({listError: "There was an error."});
                     }
+<<<<<<< HEAD
                     conn.release();
+=======
+                    conn.destroy();
+>>>>>>> 1db1e91e335f009e5cc2fddee18579284855df1b
                 })
             });
         }
